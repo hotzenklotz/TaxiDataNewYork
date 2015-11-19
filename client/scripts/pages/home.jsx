@@ -1,6 +1,7 @@
 import React from "react";
 import _ from "lodash";
 import Component from "../components/baseComponent.jsx";
+import TaxiMap from "../components/map.jsx";
 
 class Home extends Component {
 
@@ -8,7 +9,7 @@ class Home extends Component {
 
     return (
       <div className="home-page">
-        <h1>Welcome</h1>
+        <TaxiMap/>
       </div>
     );
   }

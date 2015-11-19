@@ -7,12 +7,10 @@ class App extends Component {
 
   render() {
 
-    console.log("dgfgjknfdgnkj")
-
     return (
       <div>
         <Header />
-        <div className="container">
+        <div className="main-container">
           <Router/>
         </div>
       </div>
