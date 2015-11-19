@@ -1,6 +1,5 @@
 # Taxi Data New York
-A visualization of New York City's taxi driver data using Leaflet and HANA
-
+<img src="https://github.com/hotzenklotz/TaxiDataNewYork/blob/master/client/images/apple-touch-icon-114x114.png?raw=true" align="left" height="48" width="48" > A visualization of New York City's taxi driver data using Leaflet and HANA
 
 ## Installation
 Requirements
