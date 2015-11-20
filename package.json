@@ -4,7 +4,9 @@
   "author": "Tom Herold @tom_herold",
   "description": "Preprocess JSX, ES6, LESS and bundle all modules",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "leaflet": "^0.7.7"
+  },
   "devDependencies": {
     "alt": "0.17.9",
     "babel-core": "6.2.0",
