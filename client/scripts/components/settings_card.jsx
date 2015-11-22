@@ -27,7 +27,7 @@ class SettingsCard extends Component {
   render() {
 
     const valueLink = {
-      value: this.props.location,
+      value: this.props.location.map((num) => num.toFixed(2)),
       requestChange: this.locationChanged
     };
 
