@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router";
-import Component from "./baseComponent.jsx";
+import Component from "./base_component.jsx";
 import Logo from "../../images/apple-touch-icon-72x72.png";
 
 

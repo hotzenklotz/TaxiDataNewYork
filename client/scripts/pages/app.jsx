@@ -1,5 +1,5 @@
 import React from "react";
-import Component from "../components/baseComponent.jsx";
+import Component from "../components/base_component.jsx";
 import Header from "../components/header.jsx";
 import Router from "../lib/router.jsx";
 

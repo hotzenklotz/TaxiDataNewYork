@@ -2,7 +2,7 @@ import React from "react";
 import { createHistory, useBasename } from "history"
 import { Router, Route, IndexRoute, DefaultRoute, NotFoundRoute } from "react-router";
 
-import Component from "../components/baseComponent.jsx";
+import Component from "../components/base_component.jsx";
 import Home from "../pages/home.jsx";
 import NotFound from "../pages/notFound.jsx";
 
