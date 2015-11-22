@@ -7,7 +7,7 @@ class SettingsStore {
   constructor() {
     this.bindActions(SettingsActions);
 
-    this.location = [52.3937903, 13.1296473];
+    this.location = [40.7127, -74.0059];
   }
 
   onUpdateLocation(location) {

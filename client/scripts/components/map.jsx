@@ -18,6 +18,7 @@ class TaxiMap extends Component {
   }
 
   locationChanged(evt) {
+    // scrolling / zooming also fires this event... kinda jumpy...
     const loc = _.values(this.refs.map.leafletElement.getCenter());
     SettingsActions.updateLocation(loc);
   }
@@ -25,7 +26,7 @@ class TaxiMap extends Component {
   render() {
 
     return (
-      <Map center={this.props.location} zoom={13} onLeafletMoveend={this.locationChanged} ref="map">
+      <Map center={this.props.location} zoom={13} onLeafletMoveend={_.debounce(this.locationChanged, 10)} ref="map">
         <TileLayer
           url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

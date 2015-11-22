@@ -35,7 +35,7 @@ class SettingsCard extends Component {
       <div className="settings-card">
         <div className="card">
           <div className="card-content">
-            <span className="card-title"><i className="material-icons left">settings</i> Settings</span>
+            <span className="card-title">Settings</span>
             <div className="row">
               <div className="input-field col s12">
                 <i className="material-icons prefix">place</i>
