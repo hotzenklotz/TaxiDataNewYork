@@ -5,7 +5,7 @@ import APIActions from "../actions/api_actions.js";
 const API = {
 
   getGeoJSON() {
-    const url = `/api/geojson/nyc`;
+    const url = `/api/geojson/boroughs`;
 
     return FetchUtils.fetchJson(url)
       .then((data) => APIActions.receiveGeoData(data));

@@ -23,6 +23,7 @@ class NYCStore {
   static getGeoDataForBorough(name) {
 
     const geoData = this.getState().geoData;
+
     if (geoData && geoData[name]) {
       return geoData[name];
     } else {
@@ -31,9 +32,7 @@ class NYCStore {
   }
 
   onReceiveGeoData(data) {
-    // TODO preprocess the GeoJSON on the server
-    const geometriesByBorough = _.compact(_.transform(data.features, function(result ,n, key){console.log(n); result[n.properties.boroughCode] = n}));
-    this.geoData = _.transform(this.boroughs, (result, value, key ) => result[key] = geometriesByBorough[value]);
+    this.geoData = _.transform(this.boroughs, (result, value, key ) => result[key] = data.features[value]);
   }
 
 };

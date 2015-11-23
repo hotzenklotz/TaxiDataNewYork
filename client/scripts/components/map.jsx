@@ -25,10 +25,17 @@ class TaxiMap extends Component {
     SettingsActions.updateLocation(loc);
   }
 
+  getGeoJSONLayer() {
+    const geoJSON = NYCStore.getGeoDataForBorough("Manhattan");
+    if (geoJSON) {
+      return <GeoJson data={geoJSON}/>
+    }
+  }
+
+
   render() {
 
-    const geoJSON = NYCStore.getGeoDataForBorough("Manhattan") || [];
-    debugger
+    const geoLayer = this.getGeoJSONLayer();
 
     return (
       <Map center={this.props.location} zoom={13} onLeafletMoveend={_.debounce(this.locationChanged, 10)} ref="map">
@@ -36,7 +43,7 @@ class TaxiMap extends Component {
           url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
-        <GeoJson data={geoJSON}/>
+        {geoLayer}
         <Marker position={this.props.location}>
           <Popup>
             <span>A pretty CSS3 popup.<br/>Easily customizable.</span>
