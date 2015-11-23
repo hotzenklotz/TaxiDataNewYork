@@ -3,17 +3,18 @@ import Component from "./base_component.jsx";
 import connectToStores from "alt/utils/connectToStores";
 import _ from "lodash";
 
+import NYCStore from "../stores/nyc_store.js";
 import SettingsStore from "../stores/settings_store.js";
 import SettingsActions from "../actions/settings_actions.js";
 
 class SettingsCard extends Component {
 
   static getStores() {
-    return [SettingsStore];
+    return [SettingsStore, NYCStore];
   }
 
   static getPropsFromStores() {
-    return SettingsStore.getState();
+    return _.extend({}, SettingsStore.getState(), NYCStore.getState());
   }
 
   locationChanged(value) {
@@ -24,12 +25,32 @@ class SettingsCard extends Component {
     }
   }
 
+  getBoroughCheckboxes() {
+
+    return _.map(this.props.boroughs, (i, name) => {
+      const id = `borough_${name}`;
+      const isChecked = this.props.activeBoroughs[i];
+
+      return (
+        <div key={id}>
+          <input
+            type="checkbox"
+            id={id} defaultChecked={isChecked}
+            onChange={SettingsActions.toggleBorough.bind(this, i)}/>
+          <label htmlFor={id}>{name}</label>
+        </div>
+      );
+    });
+  }
+
   render() {
 
     const valueLink = {
       value: this.props.location.map((num) => num.toFixed(2)),
       requestChange: this.locationChanged
     };
+
+    const boroughCheckboxes = this.getBoroughCheckboxes();
 
     return (
       <div className="settings-card">
@@ -41,6 +62,9 @@ class SettingsCard extends Component {
                 <i className="material-icons prefix">place</i>
                 <input id="icon_prefix" type="text" valueLink={valueLink}/>
               </div>
+            </div>
+            <div className="row">
+              {boroughCheckboxes}
             </div>
           </div>
         </div>

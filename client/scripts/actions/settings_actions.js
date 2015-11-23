@@ -4,7 +4,8 @@ class SettingsActions {
 
   constructor() {
     this.generateActions(
-      "updateLocation"
+      "updateLocation",
+      "toggleBorough"
     )
   }
 }
