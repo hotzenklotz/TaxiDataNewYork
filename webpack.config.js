@@ -25,8 +25,6 @@ module.exports = {
     alias: {
       "lodash" : "lodash",
       "jQuery" : "jquery",
-      "materialize-css" : path.join(nodePath, "materialize-css", "bin", "materialize.css"),
-      "c3-css" : path.join(nodePath, "c3", "c3.css")
     },
     extensions: ["", ".js", ".json", ".coffee", ".css"]
    },

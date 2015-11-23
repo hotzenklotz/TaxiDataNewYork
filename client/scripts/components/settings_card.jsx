@@ -1,7 +1,18 @@
+import _ from "lodash";
 import React from "react";
 import Component from "./base_component.jsx";
 import connectToStores from "alt/utils/connectToStores";
-import _ from "lodash";
+
+import Card from "material-ui/lib/card/card";
+import CardExpandable from "material-ui/lib/card/card-expandable";
+import CardTitle from "material-ui/lib/card/card-title";
+import CardText from "material-ui/lib/card/card-text";
+import TextField from "material-ui/lib/text-field";
+import Checkbox from "material-ui/lib/checkbox";
+import List from "material-ui/lib/lists/list";
+import ListItem from "material-ui/lib/lists/list-item";
+import DatePicker from "material-ui/lib/date-picker/date-picker";
+import DatePickerDialog from "material-ui/lib/date-picker/date-picker-dialog";
 
 import NYCStore from "../stores/nyc_store.js";
 import SettingsStore from "../stores/settings_store.js";
@@ -31,14 +42,20 @@ class SettingsCard extends Component {
       const id = `borough_${name}`;
       const isChecked = this.props.activeBoroughs[i];
 
+      const checkbox = (
+        <Checkbox
+          name={id}
+          onCheck={SettingsActions.toggleBorough.bind(this, i)}
+          defaultChecked={isChecked}
+          />
+        );
+
       return (
-        <div key={id} className="col s12">
-          <input
-            type="checkbox"
-            id={id} defaultChecked={isChecked}
-            onChange={SettingsActions.toggleBorough.bind(this, i)}/>
-          <label htmlFor={id}>{name}</label>
-        </div>
+        <ListItem
+          key={id}
+          leftCheckbox={checkbox}
+          primaryText={name}
+        />
       );
     });
   }
@@ -53,22 +70,28 @@ class SettingsCard extends Component {
     const boroughCheckboxes = this.getBoroughCheckboxes();
 
     return (
-      <div className="settings-card">
-        <div className="card">
-          <div className="card-content">
-            <span className="card-title">Settings</span>
-            <div className="row">
-              <div className="input-field col s12">
-                <i className="material-icons prefix">place</i>
-                <input id="icon_prefix" type="text" valueLink={valueLink}/>
-              </div>
-            </div>
-            <div className="row">
-              {boroughCheckboxes}
-            </div>
-          </div>
-        </div>
-      </div>
+      <Card initiallyExpanded={true} className="settings-card">
+        <CardTitle
+          title="Settings"
+          actAsExpander={true}
+          showExpandableButton={true}>
+        </CardTitle>
+        <CardText expandable={true}>
+          <TextField
+            hintText="Hint Text"
+            valueLink={valueLink} />
+          <DatePicker
+            hintText="Ranged Date Picker"
+            autoOk={true}
+            showYearSelector={true}
+            />
+        </CardText>
+        <CardText expandable={true}>
+          <List>
+            {boroughCheckboxes}
+          </List>
+        </CardText>
+      </Card>
     );
   }
 
