@@ -32,7 +32,7 @@ class SettingsCard extends Component {
       const isChecked = this.props.activeBoroughs[i];
 
       return (
-        <div key={id}>
+        <div key={id} className="col s12">
           <input
             type="checkbox"
             id={id} defaultChecked={isChecked}

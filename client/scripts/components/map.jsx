@@ -27,7 +27,6 @@ class TaxiMap extends Component {
 
   getGeoJSONLayers() {
 
-    debugger
     return _.map(this.props.activeBoroughs, (isActive, i) => {
       const name = _.keys(this.props.boroughs)[i];
       const geoJSON = NYCStore.getGeoDataForBorough(name);
