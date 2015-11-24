@@ -33,6 +33,12 @@ def index(fall_through):
 def send_static(asset_path):
     return send_from_directory(static_assets_path, asset_path)
 
+@app.route("/api/geojson/<city_name>")
+def send_geojson(city_name):
+    file_name = "{0}.geojson".format(city_name)
+    return send_from_directory("geojson", file_name)
+
+
 def bad_request(reason):
     response = jsonify({"error": reason})
     response.status_code = 400

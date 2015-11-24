@@ -1,31 +1,15 @@
 import FetchUtils from "./fetchUtils";
-import VideoActions from "../actions/videoActions.js";
-
-const BASE_URL = "http://localhost:9000"; 
+import NYCStore from "../stores/nyc_store.js";
+import APIActions from "../actions/api_actions.js";
 
 const API = {
 
-  postVideo: function(content) {
-    const url = `${BASE_URL}/api/upload`;
-    const options = {
-      method: "POST",
-      body: content,
-      type: "formdata"
-    };
-
-    return FetchUtils.fetchJson(url, options)
-      .then(
-        (data) => VideoActions.receivePrediction(data),
-        (error) => VideoActions.receiveUploadError(error)
-      );
-  },
-
-  getPredictionForExample(exampleId) {
-    const url = `${BASE_URL}/api/example/${exampleId}`;
+  getGeoJSON() {
+    const url = `/api/geojson/boroughs`;
 
     return FetchUtils.fetchJson(url)
-      .then((data) => VideoActions.receivePrediction(data));
-  },
+      .then((data) => APIActions.receiveGeoData(data));
+  }
 };
 
 export default API

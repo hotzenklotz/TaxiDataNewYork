@@ -1,6 +1,7 @@
-import React from "react";
 import _ from "lodash";
-import Component from "../components/baseComponent.jsx";
+import React from "react";
+import Component from "../components/base_component.jsx";
+import SettingsCard from "../components/settings_card.jsx";
 import TaxiMap from "../components/map.jsx";
 
 class Home extends Component {
@@ -9,6 +10,7 @@ class Home extends Component {
 
     return (
       <div className="home-page">
+        <SettingsCard/>
         <TaxiMap/>
       </div>
     );
