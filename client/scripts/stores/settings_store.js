@@ -11,10 +11,15 @@ class SettingsStore {
 
     this.location = [40.7127, -74.0059];
     this.activeBoroughs = _.values(NYCStore.getState().boroughs).map(() => true);
+    this.highlightFeature = 0; // 0 = avg prices; 1 = num of rides
   }
 
   onUpdateLocation(location) {
     this.location = location;
+  }
+
+  onUpdateHighlightFeature(value) {
+    this.highlightFeature = value;
   }
 
   onToggleBorough([index, evt]) {

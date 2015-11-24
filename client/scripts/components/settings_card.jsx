@@ -11,8 +11,9 @@ import TextField from "material-ui/lib/text-field";
 import Checkbox from "material-ui/lib/checkbox";
 import List from "material-ui/lib/lists/list";
 import ListItem from "material-ui/lib/lists/list-item";
-import DatePicker from "material-ui/lib/date-picker/date-picker";
-import DatePickerDialog from "material-ui/lib/date-picker/date-picker-dialog";
+import Slider from "material-ui/lib/slider";
+import RadioButton from "material-ui/lib/radio-button";
+import RadioButtonGroup from "material-ui/lib/radio-button-group";
 
 import NYCStore from "../stores/nyc_store.js";
 import SettingsStore from "../stores/settings_store.js";
@@ -34,6 +35,36 @@ class SettingsCard extends Component {
       const loc = value.split(",").map(parseFloat);
       SettingsActions.updateLocation(loc);
     }
+  }
+
+  highlightFeatureChanged(evt, value) {
+    const feature = parseInt(value.slice(-1));
+    SettingsActions.updateHighlightFeature(feature);
+  }
+
+  getHighlightFeatureOptions() {
+
+    return (
+      <RadioButtonGroup
+        name="highlightFeature"
+        onChange={this.highlightFeatureChanged}
+        style={{marginLeft: 16}}
+        defaultSelected={`feature_${this.props.highlightFeature}`}
+      >
+        <RadioButton
+          value="feature_0"
+          label="Display Fare Price"
+          style={{marginBottom: 20}}
+          labelStyle={{marginLeft: 16, fontSize: 16}}
+        />
+        <RadioButton
+          value="feature_1"
+          label="Display Rides Count"
+          style={{marginBottom: 20}}
+          labelStyle={{marginLeft: 16, fontSize: 16}}
+        />
+      </RadioButtonGroup>
+    );
   }
 
   getBoroughCheckboxes() {
@@ -68,6 +99,7 @@ class SettingsCard extends Component {
     };
 
     const boroughCheckboxes = this.getBoroughCheckboxes();
+    const highlightFeatureOptions = this.getHighlightFeatureOptions();
 
     return (
       <Card initiallyExpanded={true} className="settings-card">
@@ -80,13 +112,13 @@ class SettingsCard extends Component {
           <TextField
             hintText="Hint Text"
             valueLink={valueLink} />
-          <DatePicker
-            hintText="Ranged Date Picker"
-            autoOk={true}
-            showYearSelector={true}
-            />
-        </CardText>
-        <CardText expandable={true}>
+
+          <Slider
+            name="date"
+          />
+
+          {highlightFeatureOptions}
+
           <List>
             {boroughCheckboxes}
           </List>
