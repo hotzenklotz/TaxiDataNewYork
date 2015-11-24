@@ -14,6 +14,7 @@ import ListItem from "material-ui/lib/lists/list-item";
 import Slider from "material-ui/lib/slider";
 import RadioButton from "material-ui/lib/radio-button";
 import RadioButtonGroup from "material-ui/lib/radio-button-group";
+import FontIcon from "material-ui/lib/font-icon";
 
 import NYCStore from "../stores/nyc_store.js";
 import SettingsStore from "../stores/settings_store.js";
@@ -109,13 +110,17 @@ class SettingsCard extends Component {
           showExpandableButton={true}>
         </CardTitle>
         <CardText expandable={true}>
-          <TextField
-            hintText="Hint Text"
-            valueLink={valueLink} />
-
-          <Slider
-            name="date"
-          />
+          <div className="row">
+            <FontIcon className="col-1 material-icons">place</FontIcon>
+            <TextField
+              className="col-10"
+              hintText="Hint Text"
+              valueLink={valueLink} />
+          </div>
+          <div className="row">
+            <FontIcon className="col-1 material-icons">date_range</FontIcon>
+            <Slider className="col-10" name="date"/>
+          </div>
 
           {highlightFeatureOptions}
 

@@ -1,0 +1,39 @@
+// Grid
+@columns:       12;
+@gutterWidth:   36px;
+
+// Column size
+@columnWidth:   100%/@columns;
+
+// Clearfix
+.clear {
+  &:after {
+      display: table;
+      clear: both;
+      content: " ";
+  }
+}
+
+.row {
+
+  margin: 0 -@gutterWidth / 2;
+  padding: 0;
+  .clear();
+
+  .fluidable (0) {}
+  .fluidable (@columns);
+
+  [class*="col-"] {
+    box-sizing: border-box;
+  }
+}
+
+.fluidable (@index) when (@index > 0) {
+  .col-@{index} {
+    padding-left: @gutterWidth / 2;
+    padding-right: @gutterWidth / 2;
+    width: @columnWidth * @index;
+    float: left;
+  }
+  .fluidable(@index - 1);
+}
