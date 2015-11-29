@@ -92,8 +92,8 @@ def api_neighborhood(neighborhood):
         return bad_request('Please specify a start and end time.')
 
     try:
-        time_start = datetime.datetime.strptime(time_start, '%Y-%m-%d %H:%M:%S')
-        time_end = datetime.datetime.strptime(time_end, '%Y-%m-%d %H:%M:%S')
+        time_start = datetime.datetime.fromtimestamp(int(time_start))
+        time_end = datetime.datetime.fromtimestamp(int(time_end))
     except ValueError:
         return bad_request('Invalid time format. Please use %Y-%m-%d %H:%M:%S')
 
