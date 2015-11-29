@@ -11,7 +11,6 @@ import json
 import datetime
 
 from config import Config
-from nyc_data import boroughs
 
 from helpers import get_rides_from_area, get_neighborhood_data, \
     hana_polygon_from_list, get_bounding_box_condition, \
