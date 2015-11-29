@@ -9,6 +9,13 @@ const API = {
 
     return FetchUtils.fetchJson(url)
       .then((data) => APIActions.receiveGeoData(data));
+  },
+
+   getGeoJSONneighborhoods() {
+    const neighborhoods = `/api/geojson/neighborhoods_zip`;
+
+    return FetchUtils.fetchJson(neighborhoods)
+      .then((data) => APIActions.receiveGeoDataNeighborhoods(data));
   }
 };
 

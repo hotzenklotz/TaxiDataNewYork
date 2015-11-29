@@ -6,7 +6,9 @@ class SettingsActions {
     this.generateActions(
       "updateLocation",
       "updateHighlightFeature",
-      "toggleBorough"
+      "toggleBorough",
+      "onMouseOverNeigborHood",
+      "onMouseOutNeigborHood"
     )
   }
 }

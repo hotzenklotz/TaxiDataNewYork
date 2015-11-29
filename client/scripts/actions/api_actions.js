@@ -4,7 +4,8 @@ class APIActions {
 
   constructor() {
     this.generateActions(
-      "receiveGeoData"
+      "receiveGeoData",
+      "receiveGeoDataNeighborhoods"
     )
   }
 }
