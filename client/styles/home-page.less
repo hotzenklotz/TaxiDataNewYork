@@ -1,7 +1,7 @@
 .home-page {
 
   .leaflet-container {
-    height: 100vh;
+    height: ~"calc(100vh - 64px)";
     width: 100%;
     margin: 0 auto;
   }
@@ -13,8 +13,14 @@
 
     width: 300px;
     z-index: 20;
+
+    hr {
+      width: 85% !important;
+    }
+
+    .material-icons {
+      line-height: inherit;
+      margin-top: 20px;
+    }
   }
-
-
-
 }
