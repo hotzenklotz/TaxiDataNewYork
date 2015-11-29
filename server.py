@@ -8,16 +8,21 @@ from werkzeug import secure_filename
 from flask_extensions import *
 import pyhdb
 import json
+import datetime
 
 from config import Config
 from nyc_data import boroughs
+
+from helpers import get_rides_from_area, get_neighborhood_data, \
+    hana_polygon_from_list, get_bounding_box_condition, \
+    get_bounding_box
 
 static_assets_path = path.join(path.dirname(__file__), "dist")
 app = Flask(__name__, static_folder=static_assets_path)
 
 hana = pyhdb.connect(host=Config.hana_host, port=Config.hana_port, user=Config.hana_user, password=Config.hana_pass)
 
-boroughs = {}
+geo_data = {}
 
 # ----- Routes ----------
 @app.route("/", defaults={"fall_through": ""})
@@ -52,38 +57,71 @@ def api_rides():
     row = cur.fetchone()
     return jsonify({"count": row[0]})
 
-def hana_polygon_from_list(coords):
-    s = "Polygon (("
-    s += ", ".join([str(x) + " " + str(y) for x,y in coords])
-    s += "))"
-    return s
+def find_neighborhood(name):
+    for borough in geo_data["neighborhoods"]:
+        if name in geo_data["neighborhoods"][borough]:
+            return borough, name
+    return None, None
 
-def get_rides_from_area(area):
-    cur = hana.cursor()
-    
-    polygon = area
-    if type(polygon) != str:
-        polygon = hana_polygon_from_list(area)
-    
-    query = """SELECT TOP 10 * FROM NYCCAB.TRIP_SPATIAL
-                WHERE NEW ST_Polygon('%s').ST_Contains(NEW ST_Point(DROPOFF_LONG, DROPOFF_LAT))""" % polygon
-    print(query)
-    cur.execute(query)
-    return cur.fetchall()
+@app.route("/api/neighborhoods/<neighborhood>/rides")
+def api_neighborhood_rides(neighborhood):
+    borough, hood = find_neighborhood(neighborhood)
+    if borough is None:
+        abort(404)
 
-@app.route("/api/rides/<neighborhood>/average_fare")
-def api_rides_average_fare(neighborhood):
-    for borough in boroughs:
-        if neighborhood in boroughs[borough]:
-            polygon = [(c["lng"], c["lat"]) for c in boroughs[borough][neighborhood]["coords"]]
-            hana_polygon = hana_polygon_from_list(polygon)
-            result = {
-                "polygon": polygon,
-                "hana": hana_polygon,
-                "rides": get_rides_from_area(hana_polygon)
-            }
-            return jsonify(result)
-    return jsonify({"error": "not found"})
+    polygon = [(c["lng"], c["lat"]) for c in geo_data["neighborhoods"][borough][hood]["coords"]]
+    rides = get_rides_from_area(hana, polygon)
+
+    return jsonify({
+        "rides": rides
+    })
+
+@app.route("/api/neighborhoods")
+def api_neighborhoods():
+    return jsonify(geo_data["neighborhoods"])
+
+@app.route("/api/neighborhoods/<neighborhood>")
+def api_neighborhood(neighborhood):
+    borough, hood = find_neighborhood(neighborhood)
+    if borough is None:
+        abort(404)
+
+    time_start = request.args.get('time_start', None)
+    time_end = request.args.get('time_end', None)
+
+    if time_start is None or time_end is None:
+        return bad_request('Please specify a start and end time.')
+
+    try:
+        time_start = datetime.datetime.strptime(time_start, '%Y-%m-%d %H:%M:%S')
+        time_end = datetime.datetime.strptime(time_end, '%Y-%m-%d %H:%M:%S')
+    except ValueError:
+        return bad_request('Invalid time format. Please use %Y-%m-%d %H:%M:%S')
+
+    polygon = [(c["lng"], c["lat"]) for c in geo_data["neighborhoods"][borough][hood]["coords"]]
+    bounding_box = get_bounding_box(polygon)
+
+    data = get_neighborhood_data(hana, polygon, time_start, time_end)
+
+    result = {
+        "name": neighborhood,
+        "borough": borough,
+        "polygon": polygon,
+        "boundingBox": bounding_box,
+        "details": data
+    }
+    return jsonify(result)
+
+def load_data():
+    # load neighbourhood data
+    f = open("geojson/nyc_data.json", "r")
+    geo_data["neighborhoods"] = json.loads(f.read())
+    f.close()
+
+    # load boroughs
+    f = open("geojson/nyc.geojson", "r")
+    geo_data["boroughs"] = json.loads(f.read())
+    f.close()
 
 if __name__ == "__main__":
     # Start the server
@@ -95,9 +133,7 @@ if __name__ == "__main__":
     )
 
     # load borough data
-    f = open("nyc_data.json", "r")
-    boroughs = json.loads(f.read())
-    f.close()
+    load_data()
 
     # Make sure all frontend assets are compiled
     subprocess.Popen("webpack")
