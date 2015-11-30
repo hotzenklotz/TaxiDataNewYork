@@ -29,6 +29,7 @@ class TaxiMap extends Component {
 
     return _.map(this.props.activeBoroughs, (isActive, i) => {
       const name = _.keys(this.props.boroughs)[i];
+
       const geoJSON = NYCStore.getGeoDataForBorough(name);
 
       if (geoJSON && isActive) {
@@ -37,10 +38,54 @@ class TaxiMap extends Component {
     })
   }
 
+  getGeoJSONLayersNeighborhoods() {
+
+    const mouseOver = (evt) => {
+      evt.layer.setStyle({
+        opacity : 1,
+        fillOpacity : 0.8
+      })
+    }
+
+    const mouseOut = (evt) => {
+      evt.layer.setStyle({
+        opacity : 0.2,
+        fillOpacity : 0.2
+      })
+    }
+
+    return _.map(this.props.activeNeighborhoods, (isActive, i) => {
+      const name = this.props.neighborhoodNames[i];
+      const key = name + i
+      const geoJSON = NYCStore.getGeoDataForNeighborhood(i);
+
+      const layerStyle = {
+          color: "#ff7800",
+          weight: 2,
+          opacity: 0.2,
+          fillOpacity: 0.2
+      };
+
+      if (geoJSON) {
+        return <GeoJson
+            data={geoJSON}
+            key={key}
+            style={layerStyle}
+            onLeafletMouseOut={mouseOut}
+            onLeafletMouseOver={mouseOver}>
+          <Popup>
+            <span>Neighborhood {name}</span>
+          </Popup>
+        </GeoJson>
+      };
+    })
+  }
+
 
   render() {
 
     const geoLayers = this.getGeoJSONLayers();
+    const geoLayersNeighborhoods = this.getGeoJSONLayersNeighborhoods();
 
     return (
       <Map center={this.props.location} zoom={13} onLeafletMoveend={_.debounce(this.locationChanged, 10)} ref="map">
@@ -49,6 +94,7 @@ class TaxiMap extends Component {
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
         {geoLayers}
+        {geoLayersNeighborhoods}
         <Marker position={this.props.location}>
           <Popup>
             <span>A pretty CSS3 popup.<br/>Easily customizable.</span>

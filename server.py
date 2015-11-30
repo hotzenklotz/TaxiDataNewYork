@@ -5,7 +5,6 @@ from os import path
 import shutil
 from flask import *
 from werkzeug import secure_filename
-from flask_extensions import *
 import pyhdb
 import json
 import datetime
