@@ -9,31 +9,19 @@ class NYCStore {
 
     this.bindActions(APIActions);
 
-    this.boroughs = {
-      "Staten Island": 0,
-      "Queens": 1,
-      "Brooklyn": 2,
-      "Manhattan": 3,
-      "Bronx": 4
+    this.boroughsMap = {
+      0 : "staten_island",
+      1 : "queens",
+      2 : "brooklyn",
+      3 : "manhattan",
+      4 : "bronx"
     };
 
-    this.neighborhoodNames = [];
     this.geoData = null;
-    this.geoDataNeighborhoods = [];
+    this.geoDataNeighborhoods = null;
     this.neighborhoodsCount = 262;
 
     API.getGeoJSONneighborhoods();
-  }
-
-  static getGeoDataForBorough(name) {
-
-    const geoData = this.getState().geoData;
-
-    if (geoData && geoData[name]) {
-      return geoData[name];
-    } else {
-      API.getGeoJSON();
-    }
   }
 
   static getGeoDataForNeighborhood(index) {
@@ -50,10 +38,7 @@ class NYCStore {
   }
 
   onReceiveGeoDataNeighborhoods(data) {
-    data.features.forEach((feature, i) => {
-      this.neighborhoodNames[i] = feature.properties.postalCode + " " + feature.properties.PO_NAME;
-      this.geoDataNeighborhoods[i] = feature;
-    });
+    this.geoDataNeighborhoods = data
   }
 };
 

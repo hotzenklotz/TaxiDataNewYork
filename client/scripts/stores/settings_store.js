@@ -10,9 +10,13 @@ class SettingsStore {
     this.bindActions(SettingsActions);
 
     this.location = [40.7127, -74.0059];
-    this.activeBoroughs = _.values(NYCStore.getState().boroughs).map(() => false);  
-    this.activeNeighborhoods = _.fill(Array(NYCStore.getState().neighborhoodsCount), false); 
+    this.activeBoroughs = _.map(NYCStore.getState().boroughsMap, () => true)
+    debugger
+    this.activeNeighborhoods = _.fill(Array(NYCStore.getState().neighborhoodsCount), false);
     this.highlightFeature = "fares"; // or "rideCount"
+
+    this.timeStart = 1285884000;
+    this.timeEnd = 1299884000;
   }
 
   onUpdateLocation(location) {
@@ -27,7 +31,7 @@ class SettingsStore {
     this.activeBoroughs[index] = !this.activeBoroughs[index];
   }
 
-  onMouseOverNeigborHood([index, evt]){ 
+  onMouseOverNeigborHood([index, evt]){
     this.activeNeighborhoods[index] = true;
   }
 

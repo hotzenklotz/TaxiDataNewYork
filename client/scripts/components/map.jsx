@@ -3,7 +3,7 @@ import _ from "lodash";
 import Component from "../components/base_component.jsx";
 import connectToStores from "alt/utils/connectToStores";
 
-import { Map, Marker, Popup, TileLayer, GeoJson } from "react-leaflet";
+import { Map, Marker, Popup, TileLayer, Polygon } from "react-leaflet";
 import NYCStore from "../stores/nyc_store.js";
 import SettingsStore from "../stores/settings_store.js";
 import SettingsActions from "../actions/settings_actions.js";
@@ -25,66 +25,53 @@ class TaxiMap extends Component {
     SettingsActions.updateLocation(loc);
   }
 
-  getGeoJSONLayers() {
-
-    return _.map(this.props.activeBoroughs, (isActive, i) => {
-      const name = _.keys(this.props.boroughs)[i];
-
-      const geoJSON = NYCStore.getGeoDataForBorough(name);
-
-      if (geoJSON && isActive) {
-        return <GeoJson data={geoJSON} key={name}/>
-      };
-    })
-  }
-
   getGeoJSONLayersNeighborhoods() {
 
+    if (!this.props.geoDataNeighborhoods)
+      return null
+
     const mouseOver = (evt) => {
-      evt.layer.setStyle({
+      evt.target.setStyle({
         opacity : 1,
         fillOpacity : 0.8
       })
     }
 
     const mouseOut = (evt) => {
-      evt.layer.setStyle({
+      evt.target.setStyle({
         opacity : 0.2,
         fillOpacity : 0.2
       })
     }
 
-    return _.map(this.props.activeNeighborhoods, (isActive, i) => {
-      const name = this.props.neighborhoodNames[i];
-      const key = name + i
-      const geoJSON = NYCStore.getGeoDataForNeighborhood(i);
+    return _.flatten(_.map(this.props.activeBoroughs, (isActive, i) => {
+      if (!isActive)
+        return null
 
-      const layerStyle = {
-          color: "#ff7800",
-          weight: 2,
-          opacity: 0.2,
-          fillOpacity: 0.2
-      };
+      const borough = this.props.boroughsMap[i];
+      return this.props.geoDataNeighborhoods[borough].map((hood, i) => {
 
-      if (geoJSON) {
-        return <GeoJson
-            data={geoJSON}
-            key={key}
-            style={layerStyle}
+        // convert names to start with upercase
+        const name = _.chain(hood.name).words().map(_.capitalize).join(" ").value();
+
+        return <Polygon
+            positions={hood.polygon}
+            color="blue"
+            key={hood.name + i}
             onLeafletMouseOut={mouseOut}
-            onLeafletMouseOver={mouseOver}>
+            onLeafletMouseOver={mouseOver}
+            color='lime'>
           <Popup>
             <span>Neighborhood {name}</span>
           </Popup>
-        </GeoJson>
-      };
-    })
+        </Polygon>
+      });
+    }));
   }
 
 
   render() {
 
-    const geoLayers = this.getGeoJSONLayers();
     const geoLayersNeighborhoods = this.getGeoJSONLayersNeighborhoods();
 
     return (
@@ -93,13 +80,8 @@ class TaxiMap extends Component {
           url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
-        {geoLayers}
         {geoLayersNeighborhoods}
-        <Marker position={this.props.location}>
-          <Popup>
-            <span>A pretty CSS3 popup.<br/>Easily customizable.</span>
-          </Popup>
-        </Marker>
+        <Marker position={this.props.location}/>
       </Map>
     );
   }

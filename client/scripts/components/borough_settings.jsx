@@ -23,13 +23,13 @@ class BoroughSettings extends Component {
 
   getBoroughCheckboxes() {
 
-    return _.map(this.props.boroughs, (i, name) => {
-      const id = `borough_${name}`;
+    return _.map(this.props.boroughsMap, (name, i) => {
       const isChecked = this.props.activeBoroughs[i];
+      const capitalized_name = _.chain(name).words().map(_.capitalize).join(" ").value();
 
       const checkbox = (
         <Checkbox
-          name={id}
+          name={name}
           onCheck={SettingsActions.toggleBorough.bind(this, i)}
           defaultChecked={isChecked}
           />
@@ -37,16 +37,15 @@ class BoroughSettings extends Component {
 
       return (
         <ListItem
-          key={id}
+          key={name}
           leftCheckbox={checkbox}
-          primaryText={name}
+          primaryText={capitalized_name}
         />
       );
     });
   }
 
   render() {
-
     return (
       <List>
         {this.getBoroughCheckboxes()}

@@ -1,5 +1,4 @@
 import FetchUtils from "./fetchUtils";
-import NYCStore from "../stores/nyc_store.js";
 import APIActions from "../actions/api_actions.js";
 
 const API = {
@@ -12,7 +11,10 @@ const API = {
   },
 
    getGeoJSONneighborhoods() {
-    const neighborhoods = `/api/geojson/neighborhoods_zip`;
+    const time_start = 1285884000;
+    const time_end = 1299884000;
+
+    const neighborhoods = `/api/neighborhoods?time_start=${time_start}&time_end=${time_end}`;
 
     return FetchUtils.fetchJson(neighborhoods)
       .then((data) => APIActions.receiveGeoDataNeighborhoods(data));

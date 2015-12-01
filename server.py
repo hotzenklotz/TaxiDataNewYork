@@ -76,7 +76,39 @@ def api_neighborhood_rides(neighborhood):
 
 @app.route("/api/neighborhoods")
 def api_neighborhoods():
-    return jsonify(geo_data["neighborhoods"])
+
+    response = {"bronx": [], "queens": [], "manhattan": [], "staten_island": [], "brooklyn": []}
+
+    time_start = request.args.get('time_start', None)
+    time_end = request.args.get('time_end', None)
+
+    if time_start is None or time_end is None:
+        return bad_request('Please specify a start and end time.')
+
+    try:
+        time_start = datetime.datetime.fromtimestamp(int(time_start))
+        time_end = datetime.datetime.fromtimestamp(int(time_end))
+    except ValueError:
+        return bad_request('Invalid time format. Please use %Y-%m-%d %H:%M:%S')
+
+    for borough in geo_data["neighborhoods"]:
+        for hood in geo_data["neighborhoods"][borough]:
+
+            polygon = [(c["lat"], c["lng"]) for c in geo_data["neighborhoods"][borough][hood]["coords"]]
+            bounding_box = get_bounding_box(polygon)
+            #data = get_neighborhood_data(hana, polygon, time_start, time_end)
+            data = {}
+
+            response[borough].append({
+                "name": hood,
+                "polygon": polygon,
+                "boundingBox": bounding_box,
+                "details": data
+            })
+
+
+    return jsonify(response)
+
 
 @app.route("/api/neighborhoods/<neighborhood>")
 def api_neighborhood(neighborhood):
@@ -96,7 +128,7 @@ def api_neighborhood(neighborhood):
     except ValueError:
         return bad_request('Invalid time format. Please use %Y-%m-%d %H:%M:%S')
 
-    polygon = [(c["lng"], c["lat"]) for c in geo_data["neighborhoods"][borough][hood]["coords"]]
+    polygon = [(c["lat"], c["lng"]) for c in geo_data["neighborhoods"][borough][hood]["coords"]]
     bounding_box = get_bounding_box(polygon)
 
     data = get_neighborhood_data(hana, polygon, time_start, time_end)
