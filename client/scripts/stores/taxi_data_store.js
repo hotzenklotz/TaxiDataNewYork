@@ -11,10 +11,29 @@ class TaxiDataStore {
     this.bindActions(SettingsActions);
     this.bindActions(APIActions);
 
-    this.foo = {}
+    this.priceDataNeighborhoods = null;
+    this.countDataNeighborhoods = null;
 
     const [startTime, endTime] = SettingsStore.getDates();
     //API.getTaxiData(startTime, endTime)
+  }
+
+  static getPriceDataForNeighborhood(index) {
+
+    const priceData = this.getState().priceDataNeighborhoods;
+
+    if (priceData && priceData[index]) {
+      return priceData[index];
+    }
+  }
+
+  static getCountDataForNeighborhood(index) {
+
+    const countData = this.getState().countDataNeighborhoods;
+
+    if (countData && countData[index]) {
+      return countData[index];
+    }
   }
 
   onUpdateDates([startTime, endTime]) {
@@ -23,7 +42,8 @@ class TaxiDataStore {
   }
 
   onReceiveTaxiData(data) {
-    this.foo = data;
+//    this.priceData =  _.transform(this.boroughs, (result, value, key ) => result[key] = data.features[value]);
+//    this.countData =  _.transform(this.boroughs, (result, value, key ) => result[key] = data.features[value]);
   }
 
 };

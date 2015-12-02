@@ -25,6 +25,16 @@ class TaxiMap extends Component {
     SettingsActions.updateLocation(loc);
   }
 
+  mapPriceToColor(price)
+  {
+    return '#000000';
+  }
+
+  mapCountToColour(count)
+  {
+    return '#000000'
+  }
+
   // Create a Leaflet.Polygon for every NYC neighborhood
   getGeoJSONLayersNeighborhoods() {
 
@@ -91,5 +101,3 @@ class TaxiMap extends Component {
 };
 
 export default connectToStores(TaxiMap);
-
-
