@@ -11,7 +11,6 @@ class SettingsStore {
 
     this.location = [40.7127, -74.0059];
     this.activeBoroughs = _.map(NYCStore.getState().boroughsMap, () => true)
-    debugger
     this.activeNeighborhoods = _.fill(Array(NYCStore.getState().neighborhoodsCount), false);
     this.highlightFeature = "fares"; // or "rideCount"
 

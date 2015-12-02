@@ -75,7 +75,7 @@ class TaxiMap extends Component {
     const geoLayersNeighborhoods = this.getGeoJSONLayersNeighborhoods();
 
     return (
-      <Map center={this.props.location} zoom={13} onLeafletMoveend={_.debounce(this.locationChanged, 10)} ref="map">
+      <Map center={this.props.location} zoom={13} scrollWheelZoom={false} onLeafletMoveend={_.debounce(this.locationChanged, 10)} ref="map">
         <TileLayer
           url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
