@@ -11,11 +11,15 @@ class SettingsStore {
 
     this.location = [40.7127, -74.0059];
     this.activeBoroughs = _.map(NYCStore.getState().boroughsMap, () => true)
-    this.activeNeighborhoods = _.fill(Array(NYCStore.getState().neighborhoodsCount), false);
     this.highlightFeature = "fares"; // or "rideCount"
 
-    this.timeStart = 1285884000;
-    this.timeEnd = 1299884000;
+    // Used to limit the date slider
+    this.minTime = 1262304000; // 01.01.2010
+    this.maxTime = 1388448000; // 31.12.2013
+
+    // Unix Timestamps for the start/end of the data requests
+    this.timeStart = 1293926400; // 01.01.2011
+    this.timeEnd = 1325289600; // 31.12.2011
   }
 
   onUpdateLocation(location) {
@@ -26,16 +30,18 @@ class SettingsStore {
     this.highlightFeature = value;
   }
 
+  onUpdateDates([startValue, endValue]) {
+    this.timeStart = startValue;
+    this.timeEnd = endValue;
+  }
+
   onToggleBorough([index, evt]) {
     this.activeBoroughs[index] = !this.activeBoroughs[index];
   }
 
-  onMouseOverNeigborHood([index, evt]){
-    this.activeNeighborhoods[index] = true;
-  }
-
-  onMouseOutNeigborHood([index, evt]){
-    this.activeNeighborhoods[index] = false;
+  static getDates() {
+    const state = this.getState()
+    return [state.timeStart, state.timeEnd]
   }
 
 };

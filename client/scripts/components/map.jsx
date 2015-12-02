@@ -5,6 +5,7 @@ import connectToStores from "alt/utils/connectToStores";
 
 import { Map, Marker, Popup, TileLayer, Polygon } from "react-leaflet";
 import NYCStore from "../stores/nyc_store.js";
+import TaxiDataStore from "../stores/taxi_data_store.js";
 import SettingsStore from "../stores/settings_store.js";
 import SettingsActions from "../actions/settings_actions.js";
 
@@ -12,19 +13,19 @@ import SettingsActions from "../actions/settings_actions.js";
 class TaxiMap extends Component {
 
   static getStores() {
-    return [SettingsStore, NYCStore];
+    return [SettingsStore, NYCStore, TaxiDataStore];
   }
 
   static getPropsFromStores() {
-    return _.extend({}, SettingsStore.getState(), NYCStore.getState());
+    return _.extend({}, SettingsStore.getState(), NYCStore.getState(), TaxiDataStore.getState());
   }
 
   locationChanged(evt) {
-    // scrolling / zooming also fires this event... kinda jumpy...
     const loc = _.values(this.refs.map.leafletElement.getCenter());
     SettingsActions.updateLocation(loc);
   }
 
+  // Create a Leaflet.Polygon for every NYC neighborhood
   getGeoJSONLayersNeighborhoods() {
 
     if (!this.props.geoDataNeighborhoods)
@@ -45,9 +46,11 @@ class TaxiMap extends Component {
     }
 
     return _.flatten(_.map(this.props.activeBoroughs, (isActive, i) => {
+      // Don't create Polygons for deactivated/hidden boroughs
       if (!isActive)
         return null
 
+      // Get the geo data for all neighborhoods grouped by borough
       const borough = this.props.boroughsMap[i];
       return this.props.geoDataNeighborhoods[borough].map((hood, i) => {
 

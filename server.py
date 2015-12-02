@@ -57,11 +57,6 @@ def index(fall_through):
 def send_static(asset_path):
     return send_from_directory(static_assets_path, asset_path)
 
-@app.route("/api/geojson/<city_name>")
-def send_geojson(city_name):
-    file_name = "{0}.geojson".format(city_name)
-    return send_from_directory("geojson", file_name)
-
 
 def bad_request(reason):
     response = jsonify({"error": reason})
@@ -105,12 +100,10 @@ def api_neighborhoods():
         for hood in geo_data["neighborhoods"][borough]:
 
             polygon = [(c["lat"], c["lng"]) for c in geo_data["neighborhoods"][borough][hood]["coords"]]
-            bounding_box = get_bounding_box(polygon)
 
             response[borough].append({
                 "name": hood,
                 "polygon": polygon,
-                "boundingBox": bounding_box
             })
 
 
