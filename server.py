@@ -8,19 +8,40 @@ from werkzeug import secure_filename
 import pyhdb
 import json
 import datetime
+from functools import wraps
+
+from werkzeug.contrib.cache import SimpleCache
 
 from config import Config
 
 from helpers import get_rides_from_area, get_neighborhood_data, \
     hana_polygon_from_list, get_bounding_box_condition, \
-    get_bounding_box
+    get_bounding_box, get_neighborhoods_details, get_neighborhoods_rides
 
 static_assets_path = path.join(path.dirname(__file__), "dist")
 app = Flask(__name__, static_folder=static_assets_path)
+cache = SimpleCache()
+
+CACHE_TIMEOUT = 60*30
 
 hana = pyhdb.connect(host=Config.hana_host, port=Config.hana_port, user=Config.hana_user, password=Config.hana_pass)
 
 geo_data = {}
+
+# ----- Cache Decorator -
+def cached(timeout=30 * 60, key='view/%s'):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            cache_key = request.path + str(request.args.items())
+            rv = cache.get(cache_key)
+            if rv is not None:
+                return rv
+            rv = f(*args, **kwargs)
+            cache.set(cache_key, rv, timeout=timeout)
+            return rv
+        return decorated_function
+    return decorator
 
 # ----- Routes ----------
 @app.route("/", defaults={"fall_through": ""})
@@ -62,6 +83,7 @@ def find_neighborhood(name):
     return None, None
 
 @app.route("/api/neighborhoods/<neighborhood>/rides")
+@cached()
 def api_neighborhood_rides(neighborhood):
     borough, hood = find_neighborhood(neighborhood)
     if borough is None:
@@ -75,10 +97,28 @@ def api_neighborhood_rides(neighborhood):
     })
 
 @app.route("/api/neighborhoods")
+@cached()
 def api_neighborhoods():
-
     response = {"bronx": [], "queens": [], "manhattan": [], "staten_island": [], "brooklyn": []}
 
+    for borough in geo_data["neighborhoods"]:
+        for hood in geo_data["neighborhoods"][borough]:
+
+            polygon = [(c["lat"], c["lng"]) for c in geo_data["neighborhoods"][borough][hood]["coords"]]
+            bounding_box = get_bounding_box(polygon)
+
+            response[borough].append({
+                "name": hood,
+                "polygon": polygon,
+                "boundingBox": bounding_box
+            })
+
+
+    return jsonify(response)
+
+@app.route("/api/neighborhoods/details")
+@cached()
+def api_neighborhoods_details():
     time_start = request.args.get('time_start', None)
     time_end = request.args.get('time_end', None)
 
@@ -89,28 +129,33 @@ def api_neighborhoods():
         time_start = datetime.datetime.fromtimestamp(int(time_start))
         time_end = datetime.datetime.fromtimestamp(int(time_end))
     except ValueError:
-        return bad_request('Invalid time format. Please use %Y-%m-%d %H:%M:%S')
+        return bad_request('Invalid time format. Please use UNIX timestamps.')
 
-    for borough in geo_data["neighborhoods"]:
-        for hood in geo_data["neighborhoods"][borough]:
+    response = {}
+    details = get_neighborhoods_details(hana, time_start, time_end)
+    return jsonify(details)
 
-            polygon = [(c["lat"], c["lng"]) for c in geo_data["neighborhoods"][borough][hood]["coords"]]
-            bounding_box = get_bounding_box(polygon)
-            #data = get_neighborhood_data(hana, polygon, time_start, time_end)
-            data = {}
+@app.route("/api/neighborhoods/rides")
+@cached()
+def api_neighborhoods_rides():
+    time_start = request.args.get('time_start', None)
+    time_end = request.args.get('time_end', None)
 
-            response[borough].append({
-                "name": hood,
-                "polygon": polygon,
-                "boundingBox": bounding_box,
-                "details": data
-            })
+    if time_start is None or time_end is None:
+        return bad_request('Please specify a start and end time.')
 
+    try:
+        time_start = datetime.datetime.fromtimestamp(int(time_start))
+        time_end = datetime.datetime.fromtimestamp(int(time_end))
+    except ValueError:
+        return bad_request('Invalid time format. Please use UNIX timestamps.')
 
-    return jsonify(response)
-
+    response = {}
+    details = get_neighborhoods_rides(hana, time_start, time_end)
+    return jsonify(details)
 
 @app.route("/api/neighborhoods/<neighborhood>")
+@cached()
 def api_neighborhood(neighborhood):
     borough, hood = find_neighborhood(neighborhood)
     if borough is None:
@@ -126,18 +171,13 @@ def api_neighborhood(neighborhood):
         time_start = datetime.datetime.fromtimestamp(int(time_start))
         time_end = datetime.datetime.fromtimestamp(int(time_end))
     except ValueError:
-        return bad_request('Invalid time format. Please use %Y-%m-%d %H:%M:%S')
+        return bad_request('Invalid time format. Please use UNIX timestamp')
 
-    polygon = [(c["lat"], c["lng"]) for c in geo_data["neighborhoods"][borough][hood]["coords"]]
-    bounding_box = get_bounding_box(polygon)
-
-    data = get_neighborhood_data(hana, polygon, time_start, time_end)
+    data = get_neighborhood_data(hana, hood, time_start, time_end)
 
     result = {
         "name": neighborhood,
         "borough": borough,
-        "polygon": polygon,
-        "boundingBox": bounding_box,
         "details": data
     }
     return jsonify(result)

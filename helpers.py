@@ -1,4 +1,5 @@
 import datetime
+import time
 
 def hana_polygon_from_list(coords):
     s = "Polygon (("
@@ -42,6 +43,9 @@ def normalize_times(time_start, time_end):
     if type(time_end) == datetime.datetime:
         time_end = get_hana_time(time_end)
 
+    start = start.replace(second=0)
+    end = end.replace(second=59)
+
     return start, end
 
 def get_rides_from_area(hana, area, time_start, time_end):
@@ -59,27 +63,29 @@ def get_rides_from_area(hana, area, time_start, time_end):
     if type(time_end) == datetime.datetime:
         time_end = get_hana_time(time_end)
 
-    query = """SELECT TOP 10 MEDALLION, DRIVER, VENDOR, DROPOFF FROM NYCCAB.TRIP_TEST_SPATIAL
+    query = """SELECT TOP 10 MEDALLION, DRIVER, VENDOR, DROPOFF FROM NYCCAB.TRIP_SPATIAL_ANNOTATED
                 WHERE DROPOFF.ST_Within(NEW ST_Polygon('%s')) = 1""" % polygon
     print(query)
     cur.execute(query)
     return cur.fetchall()
 
-def get_neighborhood_data(hana, area_polygon, time_start, time_end, incoming_traffic=True):
+def get_neighborhood_data(hana, hood, time_start, time_end, incoming_traffic=False):
     cur = hana.cursor()
 
-    hana_polygon = hana_polygon_from_list(area_polygon)
     start, end = normalize_times(time_start, time_end)
 
     direction = 'DROPOFF' if incoming_traffic else 'PICKUP'
 
-    query = """SELECT SUM(FARE)/SUM(DISTANCE), AVG(FARE), AVG(T.DISTANCE), COUNT(T.PICKUP_TIME) FROM (
-            SELECT MEDALLION, DRIVER, VENDOR, %s, PICKUP_TIME, DISTANCE FROM NYCCAB.TRIP_TEST_SPATIAL
-            WHERE %s_TIME BETWEEN ? AND ?  AND %s.ST_Within(new ST_Polygon(?)) = 1) T
-            LEFT JOIN NYCCAB.FARE F ON T.MEDALLION = F.MEDALLION AND T.DRIVER = F.DRIVER AND T.PICKUP_TIME = F.PICKUP_TIME
+    query = """SELECT IFNULL(SUM(FARE),0)/IFNULL(SUM(DISTANCE),1), IFNULL(AVG(FARE),0), IFNULL(AVG(T.DISTANCE),0), IFNULL(COUNT(T.PICKUP_TIME),0)
+            FROM NYCCAB.TRIP_SPATIAL_ANNOTATED T
+            LEFT JOIN (
+                SELECT MEDALLION, DRIVER, VENDOR, PICKUP_TIME, FARE FROM NYCCAB.FARE
+                WHERE %s_TIME BETWEEN ? AND ?
+            ) F ON T.MEDALLION = F.MEDALLION AND T.DRIVER = F.DRIVER AND T.PICKUP_TIME = F.PICKUP_TIME
+            WHERE T.%s_TIME BETWEEN ? AND ?  AND %s_NEIGHBORHOOD = ?
             """ % (direction, direction, direction)
     print(query)
-    cur.execute(query, [start, end, hana_polygon])
+    cur.execute(query, [start, end, start, end, hood])
     row = cur.fetchone()
 
     return {
@@ -88,3 +94,64 @@ def get_neighborhood_data(hana, area_polygon, time_start, time_end, incoming_tra
         "avg_distance": float(row[2]),
         "ride_count": int(row[3])
     }
+
+def get_neighborhoods_details(hana, time_start, time_end, incoming_traffic=False):
+    cur = hana.cursor()
+
+    start, end = normalize_times(time_start, time_end)
+    direction = 'DROPOFF' if incoming_traffic else 'PICKUP'
+
+    query = """SELECT %s_NEIGHBORHOOD, SUM(FARE), SUM(T.DISTANCE), AVG(FARE), AVG(T.DISTANCE), COUNT(T.PICKUP_TIME)
+                FROM NYCCAB.TRIP_SPATIAL_ANNOTATED T
+                LEFT JOIN (
+                    SELECT MEDALLION, DRIVER, PICKUP_TIME, FARE FROM  NYCCAB.FARE
+                    WHERE %s_TIME BETWEEN ? AND ?
+                ) F ON T.MEDALLION = F.MEDALLION AND T.DRIVER = F.DRIVER AND T.PICKUP_TIME = F.PICKUP_TIME
+                WHERE T.%s_TIME BETWEEN ? AND ? AND T.%s_NEIGHBORHOOD IS NOT NULL
+                GROUP BY %s_NEIGHBORHOOD""" % (direction, direction, direction, direction, direction)
+    cur.execute(query, [start, end, start, end])
+
+    print(query)
+    result = {}
+
+    for row in cur.fetchall():
+        hood, fare_sum, distance_sum, fare, distance, rides = row
+        result[hood] = {
+            "avg_fare_per_mile": float(fare_sum)/float(distance_sum) if distance_sum > 0 else 0.0,
+            "avg_fare": float(fare),
+            "avg_distance": float(distance),
+            "ride_count": int(rides)
+        }
+    return result
+
+def get_neighborhoods_rides(hana, time_start, time_end, incoming_traffic=False):
+    cur = hana.cursor()
+
+    start, end = normalize_times(time_start, time_end)
+    direction = 'DROPOFF' if incoming_traffic else 'PICKUP'
+
+    query = """SELECT PICKUP_NEIGHBORHOOD, DROPOFF_NEIGHBORHOOD, COUNT(PICKUP_TIME), COUNT(DROPOFF_TIME)
+                FROM NYCCAB.TRIP_SPATIAL_ANNOTATED
+                WHERE PICKUP_TIME BETWEEN ? AND ?
+                GROUP BY PICKUP_NEIGHBORHOOD, DROPOFF_NEIGHBORHOOD"""
+    cur.execute(query, [start, end])
+
+    result = {}
+    for row in cur.fetchall():
+        pickup_hood, dropoff_hood, pickup_rides, dropoff_rides = row
+
+        if pickup_hood not in result:
+            result[pickup_hood] = {
+                "outgoing_rides": 0,
+                "incoming_rides": 0
+            }
+        if dropoff_hood not in result:
+            result[dropoff_hood] = {
+                "outgoing_rides": 0,
+                "incoming_rides": 0
+            }
+
+        result[pickup_hood]["outgoing_rides"] += pickup_rides
+        result[dropoff_hood]["incoming_rides"] += dropoff_rides
+
+    return result
