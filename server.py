@@ -36,11 +36,6 @@ def index(fall_through):
 def send_static(asset_path):
     return send_from_directory(static_assets_path, asset_path)
 
-@app.route("/api/geojson/<city_name>")
-def send_geojson(city_name):
-    file_name = "{0}.geojson".format(city_name)
-    return send_from_directory("geojson", file_name)
-
 
 def bad_request(reason):
     response = jsonify({"error": reason})
@@ -79,6 +74,25 @@ def api_neighborhoods():
 
     response = {"bronx": [], "queens": [], "manhattan": [], "staten_island": [], "brooklyn": []}
 
+    for borough in geo_data["neighborhoods"]:
+        for hood in geo_data["neighborhoods"][borough]:
+
+            polygon = [(c["lat"], c["lng"]) for c in geo_data["neighborhoods"][borough][hood]["coords"]]
+
+            response[borough].append({
+                "name": hood,
+                "polygon": polygon,
+            })
+
+
+    return jsonify(response)
+
+
+@app.route("/api/neighborhoods/details")
+def api_neighborhood_details():
+
+    response = {"bronx": [], "queens": [], "manhattan": [], "staten_island": [], "brooklyn": []}
+
     time_start = request.args.get('time_start', None)
     time_end = request.args.get('time_end', None)
 
@@ -94,21 +108,13 @@ def api_neighborhoods():
     for borough in geo_data["neighborhoods"]:
         for hood in geo_data["neighborhoods"][borough]:
 
-            polygon = [(c["lat"], c["lng"]) for c in geo_data["neighborhoods"][borough][hood]["coords"]]
-            bounding_box = get_bounding_box(polygon)
-            #data = get_neighborhood_data(hana, polygon, time_start, time_end)
-            data = {}
-
             response[borough].append({
                 "name": hood,
-                "polygon": polygon,
-                "boundingBox": bounding_box,
-                "details": data
+                "fares": 100,
+                "rides": 100,
             })
 
-
     return jsonify(response)
-
 
 @app.route("/api/neighborhoods/<neighborhood>")
 def api_neighborhood(neighborhood):
