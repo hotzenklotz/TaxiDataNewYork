@@ -5,6 +5,7 @@ class SettingsActions {
   constructor() {
     this.generateActions(
       "updateLocation",
+      "updateMapParams",
       "updateDates",
       "updateHighlightFeature",
       "toggleBorough",

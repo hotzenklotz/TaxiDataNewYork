@@ -20,9 +20,11 @@ class TaxiMap extends Component {
     return _.extend({}, SettingsStore.getState(), NYCStore.getState(), TaxiDataStore.getState());
   }
 
+  // Event handler for dragging the map
   locationChanged(evt) {
+    const zoom = evt.target.getZoom();
     const loc = _.values(this.refs.map.leafletElement.getCenter());
-    SettingsActions.updateLocation(loc);
+    SettingsActions.updateMapParams(loc, zoom);
   }
 
   mapPriceToColor(price)
@@ -88,13 +90,15 @@ class TaxiMap extends Component {
     const geoLayersNeighborhoods = this.getGeoJSONLayersNeighborhoods();
 
     return (
-      <Map center={this.props.location} zoom={13} scrollWheelZoom={false} onLeafletMoveend={_.debounce(this.locationChanged, 10)} ref="map">
+      <Map center={this.props.location}
+        zoom={this.props.zoom}
+        scrollWheelZoom={true}
+        onLeafletMoveend={_.debounce(this.locationChanged, 10)} ref="map">
         <TileLayer
           url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
         {geoLayersNeighborhoods}
-        <Marker position={this.props.location}/>
       </Map>
     );
   }

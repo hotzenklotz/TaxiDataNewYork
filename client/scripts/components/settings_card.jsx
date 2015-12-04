@@ -11,6 +11,7 @@ import Slider from "material-ui/lib/slider";
 import FontIcon from "material-ui/lib/font-icon";
 import BoroughSettings from "./borough_settings.jsx";
 import HighlightFeatureSettings from "./highlight_feature_settings.jsx";
+import DateSlider from "./date_slider.jsx";
 
 import SettingsStore from "../stores/settings_store.js";
 import SettingsActions from "../actions/settings_actions.js";
@@ -55,9 +56,12 @@ class SettingsCard extends Component {
               hintText="Hint Text"
               valueLink={valueLink} />
           </div>
+
           <div className="row">
             <FontIcon className="col-1 material-icons">date_range</FontIcon>
-            <Slider className="col-10" name="date"/>
+            <div className="col-10">
+              <DateSlider/>
+            </div>
           </div>
           <HighlightFeatureSettings/>
           <BoroughSettings/>
