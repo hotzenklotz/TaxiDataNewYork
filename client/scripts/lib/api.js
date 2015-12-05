@@ -9,6 +9,14 @@ const API = {
 
     return FetchUtils.fetchJson(neighborhoods)
       .then((data) => APIActions.receiveGeoDataNeighborhoods(data));
+  },
+
+  getTaxiDataneighborhoods(timeStar, timeEnd) {
+
+    const neighborhoods = "/api/neighborhoods/rides";
+
+    return FetchUtils.fetchJson(neighborhoods + "?time_start=" + timeStar + "&time_end=" + timeEnd)
+      .then((data) => APIActions.receiveTaxiData(data));
   }
 
 

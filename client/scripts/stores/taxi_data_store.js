@@ -12,10 +12,10 @@ class TaxiDataStore {
     this.bindActions(APIActions);
 
     this.priceDataNeighborhoods = null;
-    this.countDataNeighborhoods = null;
+    this.ridesDataNeighborhoods = null;
 
     const [startTime, endTime] = SettingsStore.getDates();
-    //API.getTaxiData(startTime, endTime)
+    API.getTaxiDataneighborhoods(startTime, endTime)
   }
 
   static getPriceDataForNeighborhood(index) {
@@ -27,23 +27,33 @@ class TaxiDataStore {
     }
   }
 
-  static getCountDataForNeighborhood(index) {
+  static getIncomingRidesForNeighborhood(index) {
 
-    const countData = this.getState().countDataNeighborhoods;
+    const countData = this.getState().ridesDataNeighborhoods;
 
     if (countData && countData[index]) {
-      return countData[index];
+      return countData[index]["incoming_rides"];
+    }
+  }
+
+  static getOutgoingRidesForNeighborhood(index) {
+
+    const countData = this.getState().ridesDataNeighborhoods;
+
+    if (countData && countData[index]) {
+      return countData[index]["outgoing_rides"];
     }
   }
 
   onUpdateDates([startTime, endTime]) {
     console.log("Requesting new data")
-    //API.getTaxiData(startTime, endTime);
+    API.getTaxiDataneighborhoods(startTime, endTime);
   }
 
   onReceiveTaxiData(data) {
-//    this.priceData =  _.transform(this.boroughs, (result, value, key ) => result[key] = data.features[value]);
-//    this.countData =  _.transform(this.boroughs, (result, value, key ) => result[key] = data.features[value]);
+    console.log("Receiving new data")
+    this.ridesDataNeighborhoods =  data;
+    console.log(this.ridesDataNeighborhoods);
   }
 
 };

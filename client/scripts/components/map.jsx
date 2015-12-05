@@ -32,9 +32,10 @@ class TaxiMap extends Component {
     return '#000000';
   }
 
-  mapCountToColour(count)
-  {
-    return '#000000'
+  heatMapColorforValue(min, max, value){
+    value = (max - min) / value;
+    var h = (1.0 - value) * 240
+    return "hsl(" + h + ", 100%, 50%)";
   }
 
   // Create a Leaflet.Polygon for every NYC neighborhood
@@ -42,13 +43,6 @@ class TaxiMap extends Component {
 
     if (!this.props.geoDataNeighborhoods)
       return null
-
-    const mouseOver = (evt) => {
-      evt.target.setStyle({
-        opacity : 1,
-        fillOpacity : 0.8
-      })
-    }
 
     const mouseOut = (evt) => {
       evt.target.setStyle({
@@ -68,16 +62,23 @@ class TaxiMap extends Component {
 
         // convert names to start with upercase
         const name = _.chain(hood.name).words().map(_.capitalize).join(" ").value();
+        const outgoingRides = TaxiDataStore.getOutgoingRidesForNeighborhood(hood.name);
+
+        const mouseOver = (evt) => {
+          evt.target.setStyle({
+            opacity : 1,
+            fillOpacity : 0.8
+          })
+        }
 
         return <Polygon
             positions={hood.polygon}
-            color="blue"
+            color={this.heatMapColorforValue(0, 200000, outgoingRides)}
             key={hood.name + i}
             onLeafletMouseOut={mouseOut}
-            onLeafletMouseOver={mouseOver}
-            color='lime'>
+            onLeafletMouseOver={mouseOver}>
           <Popup>
-            <span>Neighborhood {name}</span>
+            <span>Neighborhood {name},  {outgoingRides} outgoing rides</span>
           </Popup>
         </Polygon>
       });
