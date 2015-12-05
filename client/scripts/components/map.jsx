@@ -44,12 +44,19 @@ class TaxiMap extends Component {
     if (!this.props.geoDataNeighborhoods)
       return null
 
-    const mouseOut = (evt) => {
-      evt.target.setStyle({
-        opacity : 0.2,
-        fillOpacity : 0.2
-      })
-    }
+      const mouseOver = (evt) => {
+        evt.target.setStyle({
+          opacity : 1,
+          fillOpacity : 0.8
+        })
+      }
+
+      const mouseOut = (evt) => {
+        evt.target.setStyle({
+          opacity : 0.2,
+          fillOpacity : 0.2
+        })
+      }
 
     return _.flatten(_.map(this.props.activeBoroughs, (isActive, i) => {
       // Don't create Polygons for deactivated/hidden boroughs
@@ -63,13 +70,7 @@ class TaxiMap extends Component {
         // convert names to start with upercase
         const name = _.chain(hood.name).words().map(_.capitalize).join(" ").value();
         const outgoingRides = TaxiDataStore.getOutgoingRidesForNeighborhood(hood.name);
-
-        const mouseOver = (evt) => {
-          evt.target.setStyle({
-            opacity : 1,
-            fillOpacity : 0.8
-          })
-        }
+        const incomingRides = TaxiDataStore.getIncomingRidesForNeighborhood(hood.name);
 
         return <Polygon
             positions={hood.polygon}
@@ -78,7 +79,7 @@ class TaxiMap extends Component {
             onLeafletMouseOut={mouseOut}
             onLeafletMouseOver={mouseOver}>
           <Popup>
-            <span>Neighborhood {name},  {outgoingRides} outgoing rides</span>
+            <span>Neighborhood {name},  {outgoingRides} outgoing rides, {incomingRides} incoming rides</span>
           </Popup>
         </Polygon>
       });
