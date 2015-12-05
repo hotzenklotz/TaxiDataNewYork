@@ -1,5 +1,6 @@
 import datetime
 import time
+import sys
 
 def hana_polygon_from_list(coords):
     s = "Polygon (("
@@ -137,21 +138,37 @@ def get_neighborhoods_rides(hana, time_start, time_end, incoming_traffic=False):
     cur.execute(query, [start, end])
 
     result = {}
+    meta = {
+        "min_outgoing": None,
+        "max_outgoing": None,
+        "min_incoming": None,
+        "max_incoming": None}
+
     for row in cur.fetchall():
         pickup_hood, dropoff_hood, pickup_rides, dropoff_rides = row
 
-        if pickup_hood not in result:
+        if pickup_hood is not None and pickup_hood not in result:
             result[pickup_hood] = {
                 "outgoing_rides": 0,
                 "incoming_rides": 0
             }
-        if dropoff_hood not in result:
+        if dropoff_hood is not None and dropoff_hood not in result:
             result[dropoff_hood] = {
                 "outgoing_rides": 0,
                 "incoming_rides": 0
             }
 
-        result[pickup_hood]["outgoing_rides"] += pickup_rides
-        result[dropoff_hood]["incoming_rides"] += dropoff_rides
+        if pickup_hood is not None:
+            result[pickup_hood]["outgoing_rides"] += pickup_rides
+        if dropoff_hood is not None:
+            result[dropoff_hood]["incoming_rides"] += dropoff_rides
 
-    return result
+    meta["min_outgoing"] = min([result[hood]["outgoing_rides"] for hood in result])
+    meta["max_outgoing"] = max([result[hood]["outgoing_rides"] for hood in result])
+    meta["min_incoming"] = min([result[hood]["incoming_rides"] for hood in result])
+    meta["max_incoming"] = max([result[hood]["incoming_rides"] for hood in result])
+
+    return {
+        "meta": meta,
+        "rides": result
+    }
