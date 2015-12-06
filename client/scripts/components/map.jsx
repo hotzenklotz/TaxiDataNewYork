@@ -39,7 +39,9 @@ class TaxiMap extends Component {
       return this.heatMapColorforValue(0, 5, TaxiDataStore.getAverageFarePerMileForNeighborhood(name))
     }
     else {
-      return this.heatMapColorforValue(0, 2000000, TaxiDataStore.getOutgoingRidesForNeighborhood(name))
+     return this.heatMapColorforValue( TaxiDataStore.getMinOutgoingRidesForNeighborhood(),
+                                       TaxiDataStore.getMaxOutgoingRidesForNeighborhood(),
+                                       TaxiDataStore.getOutgoingRidesForNeighborhood(name))
     }
   }
 

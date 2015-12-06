@@ -32,8 +32,45 @@ class TaxiDataStore {
 
     const countData = this.getState().ridesDataNeighborhoods;
 
-    if (countData && countData[index]) {
-      return countData[index]["incoming_rides"];
+    if (countData && countData["rides"][index]) {
+      return countData["rides"][index]["incoming_rides"];
+    }
+  }
+
+  static getMaxIncomingRidesForNeighborhood() {
+
+    const countData = this.getState().ridesDataNeighborhoods;
+
+    if (countData && countData["meta"]) {
+      return countData["meta"]["max_incoming"];
+    }
+  }
+
+  static getMaxOutgoingRidesForNeighborhood() {
+
+    const countData = this.getState().ridesDataNeighborhoods;
+
+
+    if (countData && countData["meta"]) {
+      return countData["meta"]["max_outgoing"];
+    }
+  }
+
+  static getMinIncomingRidesForNeighborhood() {
+
+    const countData = this.getState().ridesDataNeighborhoods;
+
+    if (countData && countData["meta"]) {
+      return countData["meta"]["min_incoming"];
+    }
+  }
+
+  static getMinOutgoingRidesForNeighborhood() {
+
+    const countData = this.getState().ridesDataNeighborhoods;
+
+    if (countData && countData["meta"]) {
+      return countData["meta"]["min_outgoing"];
     }
   }
 
@@ -50,8 +87,8 @@ class TaxiDataStore {
 
     const countData = this.getState().ridesDataNeighborhoods;
 
-    if (countData && countData[index]) {
-      return countData[index]["outgoing_rides"];
+    if (countData && countData["rides"][index]) {
+      return countData["rides"][index]["outgoing_rides"];
     }
   }
 
