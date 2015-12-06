@@ -36,7 +36,7 @@ class TaxiMap extends Component {
   getColorForBorough(name)
   {
     if(this.props.highlightFeature == "fares") {
-      return this.heatMapColorforValue(0, 1, 1)
+      return this.heatMapColorforValue(0, 5, TaxiDataStore.getAverageFarePerMileForNeighborhood(name))
     }
     else {
       return this.heatMapColorforValue(0, 2000000, TaxiDataStore.getOutgoingRidesForNeighborhood(name))
@@ -76,6 +76,7 @@ class TaxiMap extends Component {
         const name = _.chain(hood.name).words().map(_.capitalize).join(" ").value();
         const outgoingRides = TaxiDataStore.getOutgoingRidesForNeighborhood(hood.name);
         const incomingRides = TaxiDataStore.getIncomingRidesForNeighborhood(hood.name);
+        const avgFare = TaxiDataStore.getAverageFarePerMileForNeighborhood  (hood.name);
         const color = this.getColorForBorough(hood.name);
 
         return <Polygon
@@ -85,7 +86,7 @@ class TaxiMap extends Component {
             onLeafletMouseOut={mouseOut}
             onLeafletMouseOver={mouseOver}>
           <Popup>
-            <span>Neighborhood {name},  {outgoingRides} outgoing rides, {incomingRides} incoming rides</span>
+            <span>Neighborhood {name},  {outgoingRides} outgoing rides, {incomingRides} incoming rides, average fare per mile {avgFare}</span>
           </Popup>
         </Polygon>
       });

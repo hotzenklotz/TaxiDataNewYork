@@ -11,11 +11,12 @@ class TaxiDataStore {
     this.bindActions(SettingsActions);
     this.bindActions(APIActions);
 
-    this.priceDataNeighborhoods = null;
+    this.fareDataNeighborhoods = null;
     this.ridesDataNeighborhoods = null;
 
     const [startTime, endTime] = SettingsStore.getDates();
-    API.getTaxiDataneighborhoods(startTime, endTime)
+    API.getRideCountDataneighborhoods(startTime, endTime)
+    API.getFareDataneighborhoods(startTime, endTime)
   }
 
   static getPriceDataForNeighborhood(index) {
@@ -36,6 +37,15 @@ class TaxiDataStore {
     }
   }
 
+  static getAverageFarePerMileForNeighborhood(index) {
+
+    const countData = this.getState().fareDataNeighborhoods;
+
+    if (countData && countData[index]) {
+      return countData[index]["avg_fare_per_mile"];
+    }
+  }
+
   static getOutgoingRidesForNeighborhood(index) {
 
     const countData = this.getState().ridesDataNeighborhoods;
@@ -47,13 +57,22 @@ class TaxiDataStore {
 
   onUpdateDates([startTime, endTime]) {
     console.log("Requesting new data")
-    API.getTaxiDataneighborhoods(startTime, endTime);
+    if(SettingsStore.highlightFeature == "rideCount")
+      API.getRideCountDataneighborhoods(startTime, endTime);
+    else
+      API.getFareDataneighborhoods(startTime, endTime);
   }
 
-  onReceiveTaxiData(data) {
-    console.log("Receiving new data")
-    this.ridesDataNeighborhoods =  data;
+  onReceiveRideCountData(data) {
+    console.log("Receiving new ridecount data")
+    this.ridesDataNeighborhoods = data;
     console.log(this.ridesDataNeighborhoods);
+  }
+
+  onReceiveFareData(data) {
+    console.log("Receiving new fare data")
+    this.fareDataNeighborhoods = data;
+    console.log(this.fareDataNeighborhoods);
   }
 
 };

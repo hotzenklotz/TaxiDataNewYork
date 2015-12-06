@@ -11,14 +11,21 @@ const API = {
       .then((data) => APIActions.receiveGeoDataNeighborhoods(data));
   },
 
-  getTaxiDataneighborhoods(timeStar, timeEnd) {
+  getRideCountDataneighborhoods(timeStar, timeEnd) {
 
     const neighborhoods = "/api/neighborhoods/rides";
 
     return FetchUtils.fetchJson(neighborhoods + "?time_start=" + timeStar + "&time_end=" + timeEnd)
-      .then((data) => APIActions.receiveTaxiData(data));
-  }
+      .then((data) => APIActions.receiveRideCountData(data));
+  },
 
+  getFareDataneighborhoods(timeStar, timeEnd) {
+
+    const neighborhoods = "/api/neighborhoods/details";
+
+    return FetchUtils.fetchJson(neighborhoods + "?time_start=" + timeStar + "&time_end=" + timeEnd)
+      .then((data) => APIActions.receiveFareData(data));
+  }
 
 };
 

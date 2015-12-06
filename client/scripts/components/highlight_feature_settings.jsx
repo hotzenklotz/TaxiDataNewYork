@@ -37,14 +37,12 @@ class HighlightFeatureSettings extends Component {
           label="Display Fare Price"
           style={{marginBottom: 20}}
           labelStyle={{marginLeft: 16, fontSize: 16}}
-          onChange={SettingsActions.toggleBorough.bind(this, "fares")}
         />
         <RadioButton
           value="rideCount"
           label="Display Rides Count"
           style={{marginBottom: 20}}
           labelStyle={{marginLeft: 16, fontSize: 16}}
-          onChange={SettingsActions.toggleBorough.bind(this, "rideCount")}
         />
       </RadioButtonGroup>
     );
