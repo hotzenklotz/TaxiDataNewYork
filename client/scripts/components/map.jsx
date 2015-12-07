@@ -29,9 +29,10 @@ class TaxiMap extends Component {
   }
 
   heatMapColorforValue(min, max, value){
-    value = (max - min) / value;
-    var h = (1.0 - value) * 240
-    return "hsl(" + h + ", 100%, 50%)";
+    value = value/(max - min);
+    var hue=((1-value)*120).toString(10);
+    
+    return ["hsl(",hue,",100%,50%)"].join("");
   }
 
   getColorForBorough(name)
