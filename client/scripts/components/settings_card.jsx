@@ -53,7 +53,7 @@ class SettingsCard extends Component {
             <FontIcon className="col-1 material-icons">place</FontIcon>
             <TextField
               className="col-10"
-              hintText="Hint Text"
+              hintText="Coordinates"
               valueLink={valueLink} />
           </div>
 

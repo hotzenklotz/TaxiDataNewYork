@@ -15,8 +15,8 @@ class TaxiDataStore {
     this.ridesDataNeighborhoods = null;
 
     const [startTime, endTime] = SettingsStore.getDates();
-    API.getRideCountDataneighborhoods(startTime, endTime)
-    API.getFareDataneighborhoods(startTime, endTime)
+    API.getRideCountDataNeighborhoods(startTime, endTime)
+    API.getFareDataNeighborhoods(startTime, endTime)
   }
 
   static getPriceDataForNeighborhood(index) {
@@ -94,10 +94,11 @@ class TaxiDataStore {
 
   onUpdateDates([startTime, endTime]) {
     console.log("Requesting new data")
-    if(SettingsStore.highlightFeature == "rideCount")
-      API.getRideCountDataneighborhoods(startTime, endTime);
-    else
-      API.getFareDataneighborhoods(startTime, endTime);
+    if(SettingsStore.getState().highlightFeature == "rideCount") {
+      API.getRideCountDataNeighborhoods(startTime, endTime);
+    } else {
+     API.getFareDataNeighborhoods(startTime, endTime);
+    }
   }
 
   onReceiveRideCountData(data) {

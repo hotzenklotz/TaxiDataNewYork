@@ -3,7 +3,7 @@ import APIActions from "../actions/api_actions.js";
 
 const API = {
 
-  getGeoJSONneighborhoods(timeStar, timeEnd) {
+  getGeoJSONneighborhoods(timeStart, timeEnd) {
 
     const neighborhoods = "/api/neighborhoods";
 
@@ -11,19 +11,19 @@ const API = {
       .then((data) => APIActions.receiveGeoDataNeighborhoods(data));
   },
 
-  getRideCountDataneighborhoods(timeStar, timeEnd) {
+  getRideCountDataNeighborhoods(timeStart, timeEnd) {
 
     const neighborhoods = "/api/neighborhoods/rides";
 
-    return FetchUtils.fetchJson(neighborhoods + "?time_start=" + timeStar + "&time_end=" + timeEnd)
+    return FetchUtils.fetchJson(neighborhoods + "?time_start=" + timeStart + "&time_end=" + timeEnd)
       .then((data) => APIActions.receiveRideCountData(data));
   },
 
-  getFareDataneighborhoods(timeStar, timeEnd) {
+  getFareDataNeighborhoods(timeStart, timeEnd) {
 
     const neighborhoods = "/api/neighborhoods/details";
 
-    return FetchUtils.fetchJson(neighborhoods + "?time_start=" + timeStar + "&time_end=" + timeEnd)
+    return FetchUtils.fetchJson(neighborhoods + "?time_start=" + timeStart + "&time_end=" + timeEnd)
       .then((data) => APIActions.receiveFareData(data));
   }
 

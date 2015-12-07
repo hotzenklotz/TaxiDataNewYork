@@ -33,14 +33,14 @@ class HighlightFeatureSettings extends Component {
         defaultSelected={this.props.highlightFeature}
       >
         <RadioButton
-          value="fares"
-          label="Display Fare Price"
+          value="rideCount"
+          label="Display Rides Count"
           style={{marginBottom: 20}}
           labelStyle={{marginLeft: 16, fontSize: 16}}
         />
         <RadioButton
-          value="rideCount"
-          label="Display Rides Count"
+          value="fares"
+          label="Display Fare Price"
           style={{marginBottom: 20}}
           labelStyle={{marginLeft: 16, fontSize: 16}}
         />
