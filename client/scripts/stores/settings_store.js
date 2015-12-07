@@ -10,7 +10,6 @@ class SettingsStore {
     this.bindActions(SettingsActions);
 
     this.zoom = 13;
-    this.loadingLocks = 0;
     this.location = [40.7127, -74.0059];
     this.activeBoroughs = _.map(NYCStore.getState().boroughsMap, () => true);
     this.highlightFeature = "rideCount"; // "fares" or "rideCount"
@@ -44,14 +43,6 @@ class SettingsStore {
 
   onToggleBorough([index, evt]) {
     this.activeBoroughs[index] = !this.activeBoroughs[index];
-  }
-
-  onIncreaseLoadingLocks() {
-   this.loadingLocks += 1;
-  }
-
-  onDecreaseLoadingLocks() {
-   this.loadingLocks -= 1;
   }
 
   static getDates() {

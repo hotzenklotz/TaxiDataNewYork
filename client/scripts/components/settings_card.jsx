@@ -15,6 +15,7 @@ import HighlightFeatureSettings from "./highlight_feature_settings.jsx";
 import DateSlider from "./date_slider.jsx";
 
 import SettingsStore from "../stores/settings_store.js";
+import TaxiDataStore from "../stores/taxi_data_store.js";
 import SettingsActions from "../actions/settings_actions.js";
 
 class SettingsCard extends Component {
@@ -43,7 +44,7 @@ class SettingsCard extends Component {
     };
 
     var spinner;
-    if(this.props.loadingLocks > 0)
+    if(TaxiDataStore.getState().loadingLocks > 0)
      spinner = <CircularProgress mode="indeterminate" color={"red"} size={2} />;
 
     return (

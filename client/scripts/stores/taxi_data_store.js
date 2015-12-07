@@ -11,10 +11,13 @@ class TaxiDataStore {
     this.bindActions(SettingsActions);
     this.bindActions(APIActions);
 
+    this.loadingLocks = 0;
     this.fareDataNeighborhoods = null;
     this.ridesDataNeighborhoods = null;
 
     const [startTime, endTime] = SettingsStore.getDates();
+
+    this.loadingLocks++;
     API.getRideCountDataNeighborhoods(startTime, endTime)
     API.getFareDataNeighborhoods(startTime, endTime)
   }
@@ -25,6 +28,9 @@ class TaxiDataStore {
 
     if (priceData && priceData[index]) {
       return priceData[index];
+    }
+    else {
+         this.loadingLocks++;
     }
   }
 
@@ -53,6 +59,9 @@ class TaxiDataStore {
 
     if (countData && countData["meta"]) {
       return countData["meta"]["max_outgoing"];
+    }
+    else {
+         this.loadingLocks++;
     }
   }
 
@@ -93,6 +102,7 @@ class TaxiDataStore {
   }
 
   onUpdateDates([startTime, endTime]) {
+    this.loadingLocks++;
     if(SettingsStore.getState().highlightFeature == "rideCount") {
       API.getRideCountDataNeighborhoods(startTime, endTime);
     } else {
@@ -102,10 +112,12 @@ class TaxiDataStore {
 
   onReceiveRideCountData(data) {
     this.ridesDataNeighborhoods = data;
+    this.loadingLocks--;
   }
 
   onReceiveFareData(data) {
     this.fareDataNeighborhoods = data;
+    this.loadingLocks--;
   }
 
 };
