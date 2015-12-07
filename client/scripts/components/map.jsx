@@ -31,19 +31,21 @@ class TaxiMap extends Component {
   heatMapColorforValue(min, max, value){
     value = value/(max - min);
     var hue=((1-value)*120).toString(10);
-    
+    if(hue < 0)
+     hue = 0;
+
     return ["hsl(",hue,",100%,50%)"].join("");
   }
 
   getColorForBorough(name)
   {
     if(this.props.highlightFeature == "fares") {
-      return this.heatMapColorforValue(0, 5, TaxiDataStore.getAverageFarePerMileForNeighborhood(name))
+      return this.heatMapColorforValue(0, 10, Math.pow(TaxiDataStore.getAverageFarePerMileForNeighborhood(name), 2)/4)
     }
     else {
      return this.heatMapColorforValue( TaxiDataStore.getMinOutgoingRidesForNeighborhood(),
-                                       TaxiDataStore.getMaxOutgoingRidesForNeighborhood(),
-                                       TaxiDataStore.getOutgoingRidesForNeighborhood(name))
+                                       TaxiDataStore.getMaxOutgoingRidesForNeighborhood()/6,
+                                       Math.pow(TaxiDataStore.getOutgoingRidesForNeighborhood(name), 2)/150)
     }
   }
 

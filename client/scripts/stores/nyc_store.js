@@ -38,7 +38,7 @@ class NYCStore {
   }
 
   onReceiveGeoDataNeighborhoods(data) {
-    this.geoDataNeighborhoods = data
+    this.geoDataNeighborhoods = data;
   }
 };
 

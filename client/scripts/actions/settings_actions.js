@@ -9,6 +9,8 @@ class SettingsActions {
       "updateDates",
       "updateHighlightFeature",
       "toggleBorough",
+      "increaseLoadingLocks",
+      "decreaseLoadingLocks",
       "onMouseOverNeigborHood",
       "onMouseOutNeigborHood"
     )

@@ -93,7 +93,6 @@ class TaxiDataStore {
   }
 
   onUpdateDates([startTime, endTime]) {
-    console.log("Requesting new data")
     if(SettingsStore.getState().highlightFeature == "rideCount") {
       API.getRideCountDataNeighborhoods(startTime, endTime);
     } else {
@@ -102,15 +101,11 @@ class TaxiDataStore {
   }
 
   onReceiveRideCountData(data) {
-    console.log("Receiving new ridecount data")
     this.ridesDataNeighborhoods = data;
-    console.log(this.ridesDataNeighborhoods);
   }
 
   onReceiveFareData(data) {
-    console.log("Receiving new fare data")
     this.fareDataNeighborhoods = data;
-    console.log(this.fareDataNeighborhoods);
   }
 
 };
