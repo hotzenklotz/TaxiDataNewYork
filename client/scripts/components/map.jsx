@@ -88,7 +88,12 @@ class TaxiMap extends Component {
             onLeafletMouseOut={mouseOut}
             onLeafletMouseOver={mouseOver}>
           <Popup>
-            <span>Neighborhood {name},  {outgoingRides} outgoing rides, {incomingRides} incoming rides, average fare per mile {avgFare}</span>
+            <div>
+              <p>Neighborhood {name}</p>
+              <p>outgoing rides: {outgoingRides} </p>
+              <p>incoming rides: {incomingRides} </p>
+              <p>average fare per mile: ${avgFare}</p>
+            </div>
           </Popup>
         </Polygon>
       });
