@@ -8,6 +8,7 @@ import NYCStore from "../stores/nyc_store.js";
 import TaxiDataStore from "../stores/taxi_data_store.js";
 import SettingsStore from "../stores/settings_store.js";
 import SettingsActions from "../actions/settings_actions.js";
+import FontIcon from "material-ui/lib/font-icon";
 
 
 class TaxiMap extends Component {
@@ -87,12 +88,13 @@ class TaxiMap extends Component {
             key={hood.name + i}
             onLeafletMouseOut={mouseOut}
             onLeafletMouseOver={mouseOver}>
-          <Popup>
+          <Popup className="infoPopup">
             <div>
-              <p>Neighborhood {name}</p>
-              <p>outgoing rides: {outgoingRides} </p>
-              <p>incoming rides: {incomingRides} </p>
-              <p>average fare per mile: ${avgFare}</p>
+              <h4>Neighborhood {name}</h4>
+              <p><FontIcon className="material-icons">local_taxi</FontIcon> rides: </p>
+              <p><FontIcon className="material-icons">arrow_forward</FontIcon> outgoing: {outgoingRides} </p>
+              <p><FontIcon className="material-icons">arrow_back</FontIcon> incoming: {incomingRides} </p>
+              <p><FontIcon className="material-icons">attach_money</FontIcon>average fare per mile: ${avgFare}</p>
             </div>
           </Popup>
         </Polygon>
