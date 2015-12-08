@@ -90,6 +90,8 @@ class TaxiDataStore {
 
     if (countData && countData[index]) {
       return countData[index]["avg_fare_per_mile"];
+    } else {
+      return 0;
     }
   }
 

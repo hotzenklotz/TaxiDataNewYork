@@ -34,7 +34,7 @@ class TaxiMap extends Component {
     if(hue < 0)
      hue = 0;
 
-    return ["hsl(",hue,",100%,50%)"].join("");
+    return "hsl(" + hue + ",100%,50%)";
   }
 
   getColorForBorough(name)
@@ -83,7 +83,7 @@ class TaxiMap extends Component {
 
         const outgoingRides = TaxiDataStore.getOutgoingRidesForNeighborhood(hood.name);
         const incomingRides = TaxiDataStore.getIncomingRidesForNeighborhood(hood.name);
-        const avgFare = TaxiDataStore.getAverageFarePerMileForNeighborhood  (hood.name);
+        const avgFare = TaxiDataStore.getAverageFarePerMileForNeighborhood(hood.name);
         const color = this.getColorForBorough(hood.name);
 
         return <Polygon
@@ -92,13 +92,15 @@ class TaxiMap extends Component {
             key={hood.name + i}
             onLeafletMouseOut={mouseOut}
             onLeafletMouseOver={mouseOver}>
-          <Popup className="infoPopup">
-            <div>
+          <Popup>
+            <div className="info-popup">
               <h4>Neighborhood {name}</h4>
-              <p><FontIcon className="material-icons">local_taxi</FontIcon> rides: </p>
-              <p><FontIcon className="material-icons">arrow_forward</FontIcon> outgoing: {outgoingRides} </p>
-              <p><FontIcon className="material-icons">arrow_back</FontIcon> incoming: {incomingRides} </p>
-              <p><FontIcon className="material-icons">attach_money</FontIcon>average fare per mile: ${avgFare}</p>
+              <p>
+                <FontIcon className="material-icons">local_taxi</FontIcon>Rides:
+                <p><FontIcon className="material-icons">arrow_forward</FontIcon>Outgoing: {outgoingRides} </p>
+                <p><FontIcon className="material-icons">arrow_back</FontIcon>Incoming: {incomingRides} </p>
+              </p>
+              <p><FontIcon className="material-icons">attach_money</FontIcon>average fare per mile: ${avgFare.toFixed(2)}</p>
             </div>
           </Popup>
         </Polygon>
