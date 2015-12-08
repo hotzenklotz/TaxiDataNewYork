@@ -7,9 +7,7 @@ import Card from "material-ui/lib/card/card";
 import CardTitle from "material-ui/lib/card/card-title";
 import CardText from "material-ui/lib/card/card-text";
 import TextField from "material-ui/lib/text-field";
-import Slider from "material-ui/lib/slider";
 import FontIcon from "material-ui/lib/font-icon";
-import CircularProgress from "material-ui/lib/circular-progress";
 import BoroughSettings from "./borough_settings.jsx";
 import HighlightFeatureSettings from "./highlight_feature_settings.jsx";
 import DateSlider from "./date_slider.jsx";
@@ -43,10 +41,6 @@ class SettingsCard extends Component {
       requestChange: this.locationChanged
     };
 
-    var spinner;
-    if(TaxiDataStore.getState().loadingLocks > 0)
-     spinner = <CircularProgress mode="indeterminate" color={"red"} size={2} />;
-
     return (
       <Card initiallyExpanded={true} className="settings-card">
         <CardTitle
@@ -69,7 +63,6 @@ class SettingsCard extends Component {
               <DateSlider/>
             </div>
           </div>
-          {spinner}
           <HighlightFeatureSettings/>
           <BoroughSettings/>
         </CardText>

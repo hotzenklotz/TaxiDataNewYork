@@ -12,6 +12,7 @@ class TaxiDataStore {
     this.bindActions(APIActions);
 
     this.loadingLocks = 0;
+    this.isLoading = true;
     this.fareDataNeighborhoods = null;
     this.ridesDataNeighborhoods = null;
 
@@ -30,7 +31,7 @@ class TaxiDataStore {
       return priceData[index];
     }
     else {
-         this.loadingLocks++;
+      this.loadingLocks++;
     }
   }
 
@@ -61,7 +62,7 @@ class TaxiDataStore {
       return countData["meta"]["max_outgoing"];
     }
     else {
-         this.loadingLocks++;
+      this.loadingLocks++;
     }
   }
 
@@ -102,6 +103,7 @@ class TaxiDataStore {
   }
 
   onUpdateDates([startTime, endTime]) {
+    this.isLoading = true;
     this.loadingLocks++;
     if(SettingsStore.getState().highlightFeature == "rideCount") {
       API.getRideCountDataNeighborhoods(startTime, endTime);
@@ -113,11 +115,13 @@ class TaxiDataStore {
   onReceiveRideCountData(data) {
     this.ridesDataNeighborhoods = data;
     this.loadingLocks--;
+    this.isLoading = false;
   }
 
   onReceiveFareData(data) {
     this.fareDataNeighborhoods = data;
     this.loadingLocks--;
+    this.isLoading = false;
   }
 
 };
