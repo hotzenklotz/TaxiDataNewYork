@@ -80,6 +80,7 @@ class TaxiMap extends Component {
 
         // convert names to start with upercase
         const name = _.chain(hood.name).words().map(_.capitalize).join(" ").value();
+
         const outgoingRides = TaxiDataStore.getOutgoingRidesForNeighborhood(hood.name);
         const incomingRides = TaxiDataStore.getIncomingRidesForNeighborhood(hood.name);
         const avgFare = TaxiDataStore.getAverageFarePerMileForNeighborhood  (hood.name);

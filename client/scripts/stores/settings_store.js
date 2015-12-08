@@ -10,7 +10,7 @@ class SettingsStore {
     this.bindActions(SettingsActions);
 
     this.zoom = 13;
-    this.location = [40.7127, -74.0059];
+    this.location = [40.74003879540742, -73.9247703552246];
     this.activeBoroughs = _.map(NYCStore.getState().boroughsMap, () => true);
     this.highlightFeature = "rideCount"; // "fares" or "rideCount"
 
