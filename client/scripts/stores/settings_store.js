@@ -11,8 +11,8 @@ class SettingsStore {
 
     this.zoom = 13;
     this.location = [40.7127, -74.0059];
-    this.activeBoroughs = _.map(NYCStore.getState().boroughsMap, () => true)
-    this.highlightFeature = "fares"; // or "rideCount"
+    this.activeBoroughs = _.map(NYCStore.getState().boroughsMap, () => true);
+    this.highlightFeature = "rideCount"; // "fares" or "rideCount"
 
     // Used to limit the date slider
     this.minTime = 1262304000; // 01.01.2010

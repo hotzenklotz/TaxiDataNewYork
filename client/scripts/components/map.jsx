@@ -8,6 +8,7 @@ import NYCStore from "../stores/nyc_store.js";
 import TaxiDataStore from "../stores/taxi_data_store.js";
 import SettingsStore from "../stores/settings_store.js";
 import SettingsActions from "../actions/settings_actions.js";
+import FontIcon from "material-ui/lib/font-icon";
 
 
 class TaxiMap extends Component {
@@ -27,25 +28,46 @@ class TaxiMap extends Component {
     SettingsActions.updateMapParams(loc, zoom);
   }
 
+  heatMapColorforValue(min, max, value){
+    value = value/(max - min);
+    var hue=((1-value)*120).toString(10);
+    if(hue < 0)
+     hue = 0;
+
+    return ["hsl(",hue,",100%,50%)"].join("");
+  }
+
+  getColorForBorough(name)
+  {
+    if(this.props.highlightFeature == "fares") {
+      return this.heatMapColorforValue(0, 10, Math.pow(TaxiDataStore.getAverageFarePerMileForNeighborhood(name), 2)/4)
+    }
+    else {
+     return this.heatMapColorforValue( TaxiDataStore.getMinOutgoingRidesForNeighborhood(),
+                                       TaxiDataStore.getMaxOutgoingRidesForNeighborhood()/6,
+                                       Math.pow(TaxiDataStore.getOutgoingRidesForNeighborhood(name), 2)/150)
+    }
+  }
+
   // Create a Leaflet.Polygon for every NYC neighborhood
   getGeoJSONLayersNeighborhoods() {
 
     if (!this.props.geoDataNeighborhoods)
       return null
 
-    const mouseOver = (evt) => {
-      evt.target.setStyle({
-        opacity : 1,
-        fillOpacity : 0.8
-      })
-    }
+      const mouseOver = (evt) => {
+        evt.target.setStyle({
+          opacity : 1,
+          fillOpacity : 0.8
+        })
+      }
 
-    const mouseOut = (evt) => {
-      evt.target.setStyle({
-        opacity : 0.2,
-        fillOpacity : 0.2
-      })
-    }
+      const mouseOut = (evt) => {
+        evt.target.setStyle({
+          opacity : 0.2,
+          fillOpacity : 0.2
+        })
+      }
 
     return _.flatten(_.map(this.props.activeBoroughs, (isActive, i) => {
       // Don't create Polygons for deactivated/hidden boroughs
@@ -58,16 +80,25 @@ class TaxiMap extends Component {
 
         // convert names to start with upercase
         const name = _.chain(hood.name).words().map(_.capitalize).join(" ").value();
+        const outgoingRides = TaxiDataStore.getOutgoingRidesForNeighborhood(hood.name);
+        const incomingRides = TaxiDataStore.getIncomingRidesForNeighborhood(hood.name);
+        const avgFare = TaxiDataStore.getAverageFarePerMileForNeighborhood  (hood.name);
+        const color = this.getColorForBorough(hood.name);
 
         return <Polygon
             positions={hood.polygon}
-            color="blue"
+            color={color}
             key={hood.name + i}
             onLeafletMouseOut={mouseOut}
-            onLeafletMouseOver={mouseOver}
-            color='lime'>
-          <Popup>
-            <span>Neighborhood {name}</span>
+            onLeafletMouseOver={mouseOver}>
+          <Popup className="infoPopup">
+            <div>
+              <h4>Neighborhood {name}</h4>
+              <p><FontIcon className="material-icons">local_taxi</FontIcon> rides: </p>
+              <p><FontIcon className="material-icons">arrow_forward</FontIcon> outgoing: {outgoingRides} </p>
+              <p><FontIcon className="material-icons">arrow_back</FontIcon> incoming: {incomingRides} </p>
+              <p><FontIcon className="material-icons">attach_money</FontIcon>average fare per mile: ${avgFare}</p>
+            </div>
           </Popup>
         </Polygon>
       });
@@ -95,5 +126,3 @@ class TaxiMap extends Component {
 };
 
 export default connectToStores(TaxiMap);
-
-

@@ -7,13 +7,13 @@ import Card from "material-ui/lib/card/card";
 import CardTitle from "material-ui/lib/card/card-title";
 import CardText from "material-ui/lib/card/card-text";
 import TextField from "material-ui/lib/text-field";
-import Slider from "material-ui/lib/slider";
 import FontIcon from "material-ui/lib/font-icon";
 import BoroughSettings from "./borough_settings.jsx";
 import HighlightFeatureSettings from "./highlight_feature_settings.jsx";
 import DateSlider from "./date_slider.jsx";
 
 import SettingsStore from "../stores/settings_store.js";
+import TaxiDataStore from "../stores/taxi_data_store.js";
 import SettingsActions from "../actions/settings_actions.js";
 
 class SettingsCard extends Component {
@@ -53,7 +53,7 @@ class SettingsCard extends Component {
             <FontIcon className="col-1 material-icons">place</FontIcon>
             <TextField
               className="col-10"
-              hintText="Hint Text"
+              hintText="Coordinates"
               valueLink={valueLink} />
           </div>
 
