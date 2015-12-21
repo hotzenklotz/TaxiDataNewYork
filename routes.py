@@ -3,7 +3,7 @@ import requests
 import time
 from multiprocessing import Pool
 
-NUM_PROCESSES = 100
+NUM_PROCESSES = 200
 
 def get_route(foo):
   '''Send a request to the OSRM server to obtain a route between two coordinates'''
@@ -47,24 +47,25 @@ if __name__ == "__main__":
   pool = Pool(NUM_PROCESSES)
 
   # Read CSV in batches in a buffer
-  lines = []
-  while (len(lines) < NUM_PROCESSES):
+  read_buffer = []
+  write_buffer = []
+  while (len(read_buffer) < NUM_PROCESSES):
 
     try:
       # Read each coordinate pair line by line into the buffer
-      lines.append(reader.next())
+      read_buffer.append(reader.next())
 
     except:
       # Stop in case there are no more lines to be read
-      results = pool.map(get_route, lines)
+      results = pool.map(get_route, read_buffer)
       merge_results(results)
       break
 
     # Start the requests upon filling the buffer
-    if len(lines) == NUM_PROCESSES:
+    if len(read_buffer) == NUM_PROCESSES:
 
       # Send the REST requests in parallel and block until all results are back
-      results = pool.map(get_route, lines)
+      results = pool.map(get_route, read_buffer)
       merge_results(results)
 
       i += NUM_PROCESSES
@@ -73,7 +74,7 @@ if __name__ == "__main__":
         print "Processed {0} routes".format(i)
 
       # Reset batch cache
-      lines[:] = []
+      read_buffer[:] = []
 
   elapsed = time.time() - start
   print elapsed
