@@ -16,7 +16,8 @@ from config import Config
 
 from helpers import get_rides_from_area, get_neighborhood_data, \
     hana_polygon_from_list, get_bounding_box_condition, \
-    get_bounding_box, get_neighborhoods_details, get_neighborhoods_rides
+    get_bounding_box, get_neighborhoods_details, get_neighborhoods_rides, \
+    get_kmeans_iteration
 
 static_assets_path = path.join(path.dirname(__file__), "dist")
 app = Flask(__name__, static_folder=static_assets_path)
@@ -25,6 +26,7 @@ cache = SimpleCache()
 CACHE_TIMEOUT = 60*30
 
 hana = pyhdb.connect(host=Config.hana_host, port=Config.hana_port, user=Config.hana_user, password=Config.hana_pass)
+hana_new = pyhdb.connect(host=Config.hana_new_host, port=Config.hana_new_port, user=Config.hana_new_user, password=Config.hana_new_pass)
 
 geo_data = {}
 
@@ -173,6 +175,17 @@ def api_neighborhood(neighborhood):
         "borough": borough,
         "details": data
     }
+    return jsonify(result)
+
+@app.route("/api/neighborhoods/kmeans/<iteration>")
+@cached()
+def api_kmeans(iteration):
+    if int(iteration) > 10:
+        abort(404)
+
+    data = get_kmeans_iteration(hana_new, iteration)
+
+    result = {"clusters": data}
     return jsonify(result)
 
 def load_data():

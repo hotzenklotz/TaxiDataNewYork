@@ -23,6 +23,12 @@ const API = {
     const neighborhoods = "/api/neighborhoods/details";
     return FetchUtils.fetchJson(neighborhoods + "?time_start=" + timeStart + "&time_end=" + timeEnd)
       .then((data) => APIActions.receiveFareData(data))
+  },
+
+  getKMeansClusters(iteration) {
+   const url = "/api/neighborhoods/kmeans/";
+   return FetchUtils.fetchJson(url + iteration)
+     .then((data) => APIActions.receiveKMeansClusters(data))
   }
 
 };

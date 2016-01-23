@@ -3,7 +3,7 @@ import _ from "lodash";
 import Component from "../components/base_component.jsx";
 import connectToStores from "alt/utils/connectToStores";
 
-import { Map, Marker, Popup, TileLayer, Polygon } from "react-leaflet";
+import { Map, Marker, Popup, TileLayer, Polygon, CircleMarker } from "react-leaflet";
 import NYCStore from "../stores/nyc_store.js";
 import TaxiDataStore from "../stores/taxi_data_store.js";
 import SettingsStore from "../stores/settings_store.js";
@@ -47,6 +47,20 @@ class TaxiMap extends Component {
                                        TaxiDataStore.getMaxOutgoingRidesForNeighborhood()/6,
                                        Math.pow(TaxiDataStore.getOutgoingRidesForNeighborhood(name), 2)/150)
     }
+  }
+
+  // Create CircleMarker for every KmeansCluster
+  getKMeansCluster() {
+   return this.props.geoDataNeighborhoods[borough].map((hood, i) => {
+
+     // convert names to start with upercase
+     const position = [40.8569367, -73.7918401];
+     const radius = 10;
+
+     return <Polygon
+         center={position}>
+     </Polygon>
+   });
   }
 
   // Create a Leaflet.Polygon for every NYC neighborhood

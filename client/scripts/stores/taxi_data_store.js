@@ -15,12 +15,14 @@ class TaxiDataStore {
     this.isLoading = true;
     this.fareDataNeighborhoods = null;
     this.ridesDataNeighborhoods = null;
+    this.kmeansClusters = null;
 
     const [startTime, endTime] = SettingsStore.getDates();
 
     this.loadingLocks++;
     API.getRideCountDataNeighborhoods(startTime, endTime)
     API.getFareDataNeighborhoods(startTime, endTime)
+    API.getKMeansClusters(1);
   }
 
   static getPriceDataForNeighborhood(index) {
@@ -124,6 +126,10 @@ class TaxiDataStore {
     this.fareDataNeighborhoods = data;
     this.loadingLocks--;
     this.isLoading = false;
+  }
+
+  onReceiveKMeansCluster(data) {
+   this.kmeansClusters = data;
   }
 
 };

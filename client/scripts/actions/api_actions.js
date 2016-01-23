@@ -7,7 +7,8 @@ class APIActions {
       "receiveGeoData",
       "receiveGeoDataNeighborhoods",
       "receiveRideCountData",
-      "receiveFareData"
+      "receiveFareData",
+      "receiveKMeansClusters"
     )
   }
 }
