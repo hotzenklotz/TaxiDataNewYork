@@ -10,6 +10,7 @@ import TextField from "material-ui/lib/text-field";
 import FontIcon from "material-ui/lib/font-icon";
 import BoroughSettings from "./borough_settings.jsx";
 import HighlightFeatureSettings from "./highlight_feature_settings.jsx";
+import ClusteringSettings from "./clustering_settings.jsx";
 import DateSlider from "./date_slider.jsx";
 
 import SettingsStore from "../stores/settings_store.js";
@@ -65,6 +66,7 @@ class SettingsCard extends Component {
           </div>
           <HighlightFeatureSettings/>
           <BoroughSettings/>
+          <ClusteringSettings/>
         </CardText>
       </Card>
     );

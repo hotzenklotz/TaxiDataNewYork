@@ -21,6 +21,9 @@ class SettingsStore {
     // Unix Timestamps for the start/end of the data requests
     this.timeStart = 1293926400; // 01.01.2011
     this.timeEnd = 1325289600; // 31.12.2011
+
+    // KMeans Clustering Visualization
+    this.animationState = SettingsStore.ANIMATION_NOT_STARTED;
   }
 
   onUpdateMapParams([location, zoom]) {
@@ -45,11 +48,18 @@ class SettingsStore {
     this.activeBoroughs[index] = !this.activeBoroughs[index];
   }
 
+  onUpdateAnimationState(value) {
+    this.animationState = value;
+  }
+
   static getDates() {
     const state = this.getState()
     return [state.timeStart, state.timeEnd]
   }
 
 };
+
+SettingsStore.ANIMATION_NOT_STARTED = -1;
+SettingsStore.ANIMATION_FINISHED = 9;
 
 export default alt.createStore(SettingsStore, "SettingsStore");

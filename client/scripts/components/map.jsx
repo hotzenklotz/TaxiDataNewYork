@@ -3,7 +3,7 @@ import _ from "lodash";
 import Component from "../components/base_component.jsx";
 import connectToStores from "alt/utils/connectToStores";
 
-import { Map, Marker, Popup, TileLayer, Polygon } from "react-leaflet";
+import { Map, Marker, Popup, TileLayer, Polygon, Circle } from "react-leaflet";
 import NYCStore from "../stores/nyc_store.js";
 import TaxiDataStore from "../stores/taxi_data_store.js";
 import SettingsStore from "../stores/settings_store.js";
@@ -108,10 +108,22 @@ class TaxiMap extends Component {
     }));
   }
 
+  getKMeansCluster() {
+    if (this.props.animationState > SettingsStore.ANIMATION_NOT_STARTED) {
+      const iteration = this.props.animationState;
+      return _.map(this.props.kmeansCluster[iteration], ([latLng, radius], i) => {
+        return <Circle center={latLng} radius={radius} key={`cluster_${iteration}_${i}`}/>;
+      });
+    } else {
+      return <span/>
+    }
+  }
 
   render() {
 
     const geoLayersNeighborhoods = this.getGeoJSONLayersNeighborhoods();
+    const kmeansCluster = this.getKMeansCluster();
+    console.log(kmeansCluster.length)
 
     return (
       <Map center={this.props.location}
@@ -123,6 +135,7 @@ class TaxiMap extends Component {
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
         {geoLayersNeighborhoods}
+        {kmeansCluster}
       </Map>
     );
   }

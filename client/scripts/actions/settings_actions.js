@@ -9,8 +9,7 @@ class SettingsActions {
       "updateDates",
       "updateHighlightFeature",
       "toggleBorough",
-      "onMouseOverNeigborHood",
-      "onMouseOutNeigborHood"
+      "updateAnimationState"
     )
   }
 }
