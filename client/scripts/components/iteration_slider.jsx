@@ -21,7 +21,7 @@ class IterationSlider extends Component {
 
   render() {
 
-    const min = 1;
+    const min = 0;
     const max = 10;
     const step = 1;
     const sliderValues = min;

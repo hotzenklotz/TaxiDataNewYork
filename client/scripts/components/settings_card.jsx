@@ -66,6 +66,7 @@ class SettingsCard extends Component {
           </div>
           <HighlightFeatureSettings/>
           <BoroughSettings/>
+          <p>Display Kmeans-iteration (0 = disabled)</p>
           <IterationSlider/>
           <br/><br/>
         </CardText>

@@ -22,7 +22,7 @@ class SettingsStore {
     this.timeStart = 1293926400; // 01.01.2011
     this.timeEnd = 1325289600; // 31.12.2011
 
-    this.currentIteration = 1;
+    this.currentIteration = 0;
   }
 
   onUpdateMapParams([location, zoom]) {

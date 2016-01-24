@@ -27,6 +27,8 @@ const API = {
 
   getKMeansClusters(iteration) {
    const url = "/api/neighborhoods/kmeans/";
+
+   if(iteration > 0 && iteration <= 10)
    return FetchUtils.fetchJson(url + iteration)
      .then((data) => APIActions.receiveKMeansClusters(data))
   }

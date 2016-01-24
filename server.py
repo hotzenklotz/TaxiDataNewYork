@@ -180,7 +180,7 @@ def api_neighborhood(neighborhood):
 @app.route("/api/neighborhoods/kmeans/<iteration>")
 @cached()
 def api_kmeans(iteration):
-    if int(iteration) > 10:
+    if int(iteration) > 10 or int(iteration) < 1:
         abort(404)
 
     data = get_kmeans_iteration(hana_new, iteration)
