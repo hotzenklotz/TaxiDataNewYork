@@ -123,7 +123,6 @@ class TaxiMap extends Component {
 
     const geoLayersNeighborhoods = this.getGeoJSONLayersNeighborhoods();
     const kmeansCluster = this.getKMeansCluster();
-    console.log(kmeansCluster.length)
 
     return (
       <Map center={this.props.location}
