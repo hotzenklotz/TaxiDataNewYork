@@ -7,6 +7,7 @@ class SettingsActions {
       "updateLocation",
       "updateMapParams",
       "updateDates",
+      "updateIteration",
       "updateHighlightFeature",
       "toggleBorough",
       "onMouseOverNeigborHood",

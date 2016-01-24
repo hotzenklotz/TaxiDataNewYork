@@ -21,6 +21,8 @@ class SettingsStore {
     // Unix Timestamps for the start/end of the data requests
     this.timeStart = 1293926400; // 01.01.2011
     this.timeEnd = 1325289600; // 31.12.2011
+
+    this.currentIteration = 1;
   }
 
   onUpdateMapParams([location, zoom]) {
@@ -39,6 +41,10 @@ class SettingsStore {
   onUpdateDates([startValue, endValue]) {
     this.timeStart = startValue;
     this.timeEnd = endValue;
+  }
+
+  onUpdateIteration(iteration) {
+   this.currentIteration = iteration;
   }
 
   onToggleBorough([index, evt]) {

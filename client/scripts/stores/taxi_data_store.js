@@ -22,7 +22,7 @@ class TaxiDataStore {
     this.loadingLocks++;
     API.getRideCountDataNeighborhoods(startTime, endTime)
     API.getFareDataNeighborhoods(startTime, endTime)
-    API.getKMeansClusters(1);
+    API.getKMeansClusters(SettingsStore.getState().currentIteration);
   }
 
   static getPriceDataForNeighborhood(index) {
@@ -114,6 +114,12 @@ class TaxiDataStore {
     } else {
      API.getFareDataNeighborhoods(startTime, endTime);
     }
+  }
+
+  onUpdateIteration(iteration) {
+   this.isLoading = true;
+   this.loadingLocks++;
+   API.getKMeansClusters(SettingsStore.getState().currentIteration);
   }
 
   onReceiveRideCountData(data) {

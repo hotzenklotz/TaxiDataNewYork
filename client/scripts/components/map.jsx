@@ -50,11 +50,12 @@ class TaxiMap extends Component {
   }
 
   // Create CircleMarker for every KmeansCluster
-  getKMeansCluster() {
-   return this.props.geoDataNeighborhoods[borough].map((hood, i) => {
+  getKMeansClusters() {
+   if(this.props.kmeansClusters)   
+    return this.props.kmeansClusters["clusters"].foreach((cluster, i) => {
 
      // convert names to start with upercase
-     const position = [40.8569367, -73.7918401];
+     const position = [cluster[1], cluster[2]];
      const radius = 10;
 
      return <Polygon
@@ -126,6 +127,7 @@ class TaxiMap extends Component {
   render() {
 
     const geoLayersNeighborhoods = this.getGeoJSONLayersNeighborhoods();
+    const clusters = this.getKMeansClusters();
 
     return (
       <Map center={this.props.location}
@@ -137,6 +139,7 @@ class TaxiMap extends Component {
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
         {geoLayersNeighborhoods}
+        {clusters}
       </Map>
     );
   }

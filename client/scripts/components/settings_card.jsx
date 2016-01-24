@@ -11,6 +11,7 @@ import FontIcon from "material-ui/lib/font-icon";
 import BoroughSettings from "./borough_settings.jsx";
 import HighlightFeatureSettings from "./highlight_feature_settings.jsx";
 import DateSlider from "./date_slider.jsx";
+import IterationSlider from "./iteration_slider.jsx";
 
 import SettingsStore from "../stores/settings_store.js";
 import TaxiDataStore from "../stores/taxi_data_store.js";
@@ -65,6 +66,8 @@ class SettingsCard extends Component {
           </div>
           <HighlightFeatureSettings/>
           <BoroughSettings/>
+          <IterationSlider/>
+          <br/><br/>
         </CardText>
       </Card>
     );
