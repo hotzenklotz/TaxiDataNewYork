@@ -51,16 +51,16 @@ class TaxiMap extends Component {
 
   // Create CircleMarker for every KmeansCluster
   getKMeansClusters() {
-   if(this.props.kmeansClusters)   
-    return this.props.kmeansClusters["clusters"].foreach((cluster, i) => {
+   if(this.props.kmeansClusters)
+    return this.props.kmeansClusters.clusters.map((cluster, i) => {
 
      // convert names to start with upercase
-     const position = [cluster[1], cluster[2]];
-     const radius = 10;
-
-     return <Polygon
-         center={position}>
-     </Polygon>
+     const position = [cluster[2], cluster[1]];
+     const radius = 5;
+     return <CircleMarker
+         center={position}
+         radius={radius}>
+     </CircleMarker>
    });
   }
 

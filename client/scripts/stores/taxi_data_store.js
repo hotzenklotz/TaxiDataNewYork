@@ -12,13 +12,14 @@ class TaxiDataStore {
     this.bindActions(APIActions);
 
     this.loadingLocks = 0;
-    this.isLoading = true;
     this.fareDataNeighborhoods = null;
     this.ridesDataNeighborhoods = null;
     this.kmeansClusters = null;
 
     const [startTime, endTime] = SettingsStore.getDates();
 
+    this.loadingLocks++;
+    this.loadingLocks++;
     this.loadingLocks++;
     API.getRideCountDataNeighborhoods(startTime, endTime)
     API.getFareDataNeighborhoods(startTime, endTime)
@@ -107,7 +108,6 @@ class TaxiDataStore {
   }
 
   onUpdateDates([startTime, endTime]) {
-    this.isLoading = true;
     this.loadingLocks++;
     if(SettingsStore.getState().highlightFeature == "rideCount") {
       API.getRideCountDataNeighborhoods(startTime, endTime);
@@ -117,7 +117,6 @@ class TaxiDataStore {
   }
 
   onUpdateIteration(iteration) {
-   this.isLoading = true;
    this.loadingLocks++;
    API.getKMeansClusters(SettingsStore.getState().currentIteration);
   }
@@ -125,17 +124,16 @@ class TaxiDataStore {
   onReceiveRideCountData(data) {
     this.ridesDataNeighborhoods = data;
     this.loadingLocks--;
-    this.isLoading = false;
   }
 
   onReceiveFareData(data) {
     this.fareDataNeighborhoods = data;
     this.loadingLocks--;
-    this.isLoading = false;
   }
 
-  onReceiveKMeansCluster(data) {
+  onReceiveKMeansClusters(data) {
    this.kmeansClusters = data;
+   this.loadingLocks--;
   }
 
 };

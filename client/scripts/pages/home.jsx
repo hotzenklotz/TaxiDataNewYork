@@ -19,7 +19,7 @@ class Home extends Component {
   }
 
   getLoadingSpinner() {
-    if(this.props.isLoading)
+    if(this.props.loadingLocks>0)
       return <RefreshIndicator size={100} left={0} top={0} loadingColor={"#FF0000"} status="loading" />;
     else
       return null;
