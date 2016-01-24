@@ -56,7 +56,7 @@ class TaxiMap extends Component {
 
      // convert names to start with upercase
      const position = [cluster[2], cluster[1]];
-     const radius = 5;
+     const radius = Math.pow(cluster[3] * 5, 3);
      return <CircleMarker
          center={position}
          radius={radius}>

@@ -127,7 +127,13 @@ def get_neighborhoods_details(hana, time_start, time_end, incoming_traffic=False
 
 def get_kmeans_iteration(hana, iteration):
     cur = hana.cursor()
-    query = """SELECT CLUSTER_ID, DROPOFF_LONG, DROPOFF_LAT FROM TUK_GRP3.PAL_KMEANS_CENTERS_TBL_%s_ITERATION""" % (iteration)
+    query = """SELECT
+                a.CLUSTER_ID,
+                a.DROPOFF_LONG,
+                a.DROPOFF_LAT,
+                b.SLIGHT_SILHOUETTE as RADIUS
+                 from TUK_GRP3.PAL_KMEANS_CENTERS_TBL_%s_ITERATION as a inner join
+                 TUK_GRP3.PAL_KMEANS_SIL_CENTERS_TBL_%s_ITERATION as b on a.CLUSTER_ID = b.CLUSTER_ID"""  % (iteration, iteration)
     print(query)
     cur.execute(query)
     return cur.fetchall()
