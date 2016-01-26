@@ -21,7 +21,7 @@ class NYCStore {
     this.geoDataNeighborhoods = null;
     this.neighborhoodsCount = 303;
 
-    API.getGeoJSONneighborhoods();
+    //API.getGeoJSONneighborhoods();
   }
 
   static getGeoDataForNeighborhood(index) {

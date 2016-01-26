@@ -18,12 +18,12 @@ class TaxiDataStore {
 
     const [startTime, endTime] = SettingsStore.getDates();
 
-    this.loadingLocks++;
-    this.loadingLocks++;
-    this.loadingLocks++;
-    API.getRideCountDataNeighborhoods(startTime, endTime)
-    API.getFareDataNeighborhoods(startTime, endTime)
-    API.getKMeansClusters(SettingsStore.getState().currentIteration);
+    //this.loadingLocks++;
+    //this.loadingLocks++;
+    //this.loadingLocks++;
+    //API.getRideCountDataNeighborhoods(startTime, endTime)
+    //API.getFareDataNeighborhoods(startTime, endTime)
+    //API.getKMeansClusters(SettingsStore.getState().currentIteration);
   }
 
   static getPriceDataForNeighborhood(index) {
