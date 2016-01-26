@@ -63,6 +63,14 @@ class TaxiMap extends Component {
          radius={radius}
          color={colors[cluster[0]+1]}
          opacity={1.0}>
+         <Popup>
+            <div className="info-popup">
+              <h4>Cluster {cluster[0]}</h4>
+              <p>
+                <FontIcon className="material-icons">filter_tilt_shift</FontIcon>Cluster size: {cluster[3]}
+              </p>
+            </div>
+          </Popup>
      </CircleMarker>
    });
   }
