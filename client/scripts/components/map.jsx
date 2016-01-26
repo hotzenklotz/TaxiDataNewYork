@@ -9,6 +9,7 @@ import TaxiDataStore from "../stores/taxi_data_store.js";
 import SettingsStore from "../stores/settings_store.js";
 import SettingsActions from "../actions/settings_actions.js";
 import FontIcon from "material-ui/lib/font-icon";
+import colors from "../lib/colors"
 
 
 class TaxiMap extends Component {
@@ -59,7 +60,9 @@ class TaxiMap extends Component {
      const radius = Math.log(cluster[3])*2;
      return <CircleMarker
          center={position}
-         radius={radius}>
+         radius={radius}
+         color={colors[cluster[0]+1]}
+         opacity={1.0}>
      </CircleMarker>
    });
   }
